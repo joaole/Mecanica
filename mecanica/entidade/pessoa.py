@@ -3,9 +3,12 @@ from abc import ABC, abstractmethod
 
 class Pessoa(ABC):
     def __init__(self, nome, telefone, email):
-        self.__nome = nome
-        self.__telefone = telefone
-        self.__email = email
+        if isinstance(nome, str):
+            self.__nome = nome
+        if isinstance(telefone, str):
+            self.__telefone = telefone
+        if isinstance(email, str):
+            self.__email = email
 
     @property
     def nome(self):
