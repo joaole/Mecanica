@@ -1,10 +1,16 @@
 from entidade.cliente import Cliente
 from entidade.veiculo import Veiculo
+from entidade.modelo import Modelo
 
 
 class ControladorCliente:
-    def __init__(self):
+    def __init__(self, controlador_sistema):
+        self.__controlador_sistema = controlador_sistema
+        self.__tela_cliente = TelaCliente()
         self.__clientes = []
+
+    def pega_cliente_por_cpf(self, cpf: int):
+        
 
     def inclui_cliente(self, nome, telefone, email, cpf):
         novo_cliente = Cliente(nome, telefone, email, cpf)
@@ -37,12 +43,9 @@ class ControladorCliente:
             return None
 
     def altera_cliente_cpf(self, cpf, novo_cpf):
-        if self.validar_cpf(cpf) is False:
-            return None
-        else:
-            for cliente in self.__clientes:
-                if cliente.cpf == cpf:
-                    cliente.cpf = novo_cpf
+        for cliente in self.__clientes:
+            if cliente.cpf == cpf:
+                cliente.cpf = novo_cpf
 
     def exclui_cliente(self, cpf):
         for cliente in self.__clientes:
@@ -60,11 +63,12 @@ class ControladorCliente:
             return None
 
     def inclui_veiculo(self, cpf, placa_moto, km_moto, modelo):
-        novo_veiculo = Veiculo(placa_moto, km_moto, modelo)
+        if isinstance(cpf, int) and isinstance(placa_moto, str) and isinstance(modelo, Modelo):
+            novo_veiculo = Veiculo(placa_moto, km_moto, modelo)
         for cliente in self.__clientes:
             if cliente.cpf == cpf:
                 for veiculo in cliente.veiculos:
-                    if veiculo.placa_moto == novo_veiculo.placa_moto:
+                    if veiculo.placa_moto == placa_moto:
                         return None
                 else:
                     cliente.inclui_veiculo(novo_veiculo)
