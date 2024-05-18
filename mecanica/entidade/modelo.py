@@ -1,11 +1,11 @@
 
 
 class Modelo:
-    def __init__(self, nome, quantidade_oleo, codigo):
+    def __init__(self, nome, quantidade_oleo):
         self.__nome = nome
         self.__quantidade_oleo = quantidade_oleo
         self.__oleos = []
-        self.__codigo = codigo
+
     @property
     def nome(self):
         return self.__nome
@@ -25,11 +25,3 @@ class Modelo:
     @property
     def oleos(self):
         return self.__oleos
-
-    @property
-    def codigo(self):
-        return  self.__codigo
-
-    @codigo.setter
-    def codigo(self, codigo):
-        self.__codigo = codigo
