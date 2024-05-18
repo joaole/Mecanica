@@ -1,5 +1,6 @@
 from pessoa import Pessoa
 
+
 class Fornecedor(Pessoa):
     def __init__(self, nome, telefone, email, cnpj):
         super().__init__(nome, telefone, email)
@@ -12,3 +13,5 @@ class Fornecedor(Pessoa):
     @cnpj.setter
     def cnpj(self, cnpj):
         self.__cnpj = cnpj
+fornecedor = Fornecedor('Cleverson', '5555', 'uhuhuh', 556)
+print(fornecedor.nome)
