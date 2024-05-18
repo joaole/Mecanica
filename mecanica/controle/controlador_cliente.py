@@ -10,7 +10,11 @@ class ControladorCliente:
         self.__clientes = []
 
     def pega_cliente_por_cpf(self, cpf: int):
-        
+        for cliente in self.__clientes:
+            if cliente.cpf == cpf:
+                return cliente
+        else:
+            return None
 
     def inclui_cliente(self, nome, telefone, email, cpf):
         novo_cliente = Cliente(nome, telefone, email, cpf)
