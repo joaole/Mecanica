@@ -5,7 +5,8 @@ from veiculo import Veiculo
 class Cliente(Pessoa):
     def __init__(self,nome, telefone, email, cpf):
         super().__init__(nome, telefone, email)
-        self.__cpf = cpf
+        if isinstance(cpf, int):
+            self.__cpf = cpf
         self.__veiculos = []
 
     @property
