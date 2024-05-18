@@ -3,10 +3,11 @@ from entidade.fornecedor import Fornecedor
 
 
 class ControladorOleo:
-    def __init__(self):
+    def __init__(self, controlador_sistema):
+        self.__controlador_sistema = controlador_sistema
         self.__oleos = []
 
-    def inclui_oleo(self, fornecedor, marca: str, expessura: int, valor: str, codigo: int):
+    def inclui_oleo(self, fornecedor: Fornecedor, marca: str, expessura: int, valor: str, codigo: int):
         novo_oleo = Oleo(fornecedor, marca, expessura, valor, codigo)
         for oleo in self.__oleos:
             '''se o codigo for igual, nem adiciona'''
@@ -47,3 +48,5 @@ class ControladorOleo:
             if oleo.fornecedor == fornecedor:
                 oleos_do_fornecedor.append(oleo)
         return oleos_do_fornecedor
+    def retornar(self):
+        self.__controlador_sistema.abre_tela()
