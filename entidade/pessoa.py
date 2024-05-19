@@ -20,7 +20,7 @@ class Pessoa(ABC):
 
     @property
     def telefone(self):
-        return self.__nome
+        return self.__telefone
 
     @telefone.setter
     def telefone(self, telefone):
