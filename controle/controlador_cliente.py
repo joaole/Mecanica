@@ -33,9 +33,9 @@ class ControladorCliente:
 
         if self.pega_cliente_por_cpf(novo_cliente.cpf) is None:
             self.__clientes.append(novo_cliente)
-            self.__tela_cliente.mostra_mensagem(f"{novo_cliente} cadastrado com sucesso.")
+            self.__tela_cliente.mostra_mensagem(f"{novo_cliente.nome} cadastrado com sucesso.")
         else:
-            self.__tela_cliente.mostra_mensagem("ATENCAO: Cpf ja cadastrado")
+            self.__tela_cliente.mostra_mensagem("ATENCAO: CPF duplicado")
 
     def altera_cliente(self):
         self.listar_clientes()
@@ -66,7 +66,7 @@ class ControladorCliente:
         cpf = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf)
         dados = self.__tela_cliente.pega_dados_moto()
-        nova_moto = Veiculo(dados["placa_moto"], dados["km_moto"], dados["modelo"])
+        nova_moto = Veiculo(dados["placa"], dados["kilometragem"], dados["modelo"])
         if cliente is not None:
             if self.pega_moto_por_placa(cliente, nova_moto.placa_moto) is None:
                 cliente.inclui_veiculo(nova_moto)
@@ -80,7 +80,7 @@ class ControladorCliente:
         cpf = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf)
         if cliente is not None:
-            self.listar_veiculo(cliente)
+            self.listar_veiculos()
             placa_moto = self.__tela_cliente.seleciona_moto()
             moto = self.pega_moto_por_placa(cliente, placa_moto)
             if moto is not None:
@@ -92,10 +92,10 @@ class ControladorCliente:
 
     def altera_veiculo(self):
         self.listar_clientes()
-        cpf_cliente = self.__tela_cliente.seleciona_cliente
+        cpf_cliente = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf_cliente)
         if cliente is not None:
-            self.listar_veiculo(cliente)
+            self.listar_veiculos()
             placa = self.__tela_cliente.seleciona_moto()
             novos_dados_moto = self.__tela_cliente.pega_dados_moto()
             for veiculo in cliente.veiculos:
@@ -108,17 +108,17 @@ class ControladorCliente:
         else:
             self.__tela_cliente.mostra_mensagem("ATENCAO: Nenhum cliente cadastrado com este CPF")
 
-    def listar_veiculo(self, cliente):
-        for cl in self.__clientes:
-            if cl.cpf == cliente.cpf:
-                return cliente.veiculos
-        else:
-            return None
+    def listar_veiculos(self):
+        cpf = self.__tela_cliente.seleciona_cliente()
+        cliente = self.pega_cliente_por_cpf(cpf)
+        if cliente is not None:
+            for veiculo in cliente.veiculos:
+                self.__tela_cliente.mostra_veiculo({"modelo": veiculo.modelo, "kilometragem": veiculo.km_moto, "placa": veiculo.placa_moto})
 
     def abre_tela(self):
         lista_opcoes = {1: self.inclui_cliente, 2: self.altera_cliente, 3: self.listar_clientes,
                         4: self.exclui_cliente, 5: self.inclui_veiculo, 6: self.altera_veiculo,
-                        7: self.exclui_veiculo, 8: self.listar_veiculo, 0: self.retornar}
+                        7: self.exclui_veiculo, 8: self.listar_veiculos, 0: self.retornar}
 
         continua = True
         while continua:
@@ -126,4 +126,3 @@ class ControladorCliente:
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
-
