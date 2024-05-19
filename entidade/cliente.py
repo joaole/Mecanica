@@ -1,12 +1,11 @@
-from pessoa import Pessoa
-from veiculo import Veiculo
+from entidade.pessoa import Pessoa
+from entidade.veiculo import Veiculo
 
 
 class Cliente(Pessoa):
     def __init__(self,nome, telefone, email, cpf):
         super().__init__(nome, telefone, email)
-        if isinstance(cpf, int):
-            self.__cpf = cpf
+        self.__cpf = cpf
         self.__veiculos = []
 
     @property
