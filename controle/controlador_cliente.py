@@ -1,6 +1,6 @@
 from entidade.cliente import Cliente
 from entidade.veiculo import Veiculo
-from entidade.modelo import Modelo
+from limite.tela_cliente import TelaCliente
 
 
 class ControladorCliente:
@@ -9,6 +9,10 @@ class ControladorCliente:
         self.__tela_cliente = TelaCliente()
         self.__clientes = []
 
+    def listar_clientes(self):
+        for cliente in self.__clientes:
+            self.__tela_cliente.mostra_cliente({"nome": cliente.nome, "telefone": cliente.telefone, "cpf": cliente.cpf, "email": cliente.email})
+
     def pega_cliente_por_cpf(self, cpf: int):
         for cliente in self.__clientes:
             if cliente.cpf == cpf:
@@ -16,95 +20,110 @@ class ControladorCliente:
         else:
             return None
 
-    def inclui_cliente(self, nome, telefone, email, cpf):
-        novo_cliente = Cliente(nome, telefone, email, cpf)
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                return None
+    def pega_moto_por_placa(self, cliente, placa_moto):
+        for veiculo in cliente.veiculos:
+            if veiculo.placa_moto == placa_moto:
+                return veiculo
         else:
+            return None
+
+    def inclui_cliente(self):
+        dados = self.__tela_cliente.pega_dados_cliente()
+        novo_cliente = Cliente(dados["nome"], dados["telefone"], dados["email"], dados["cpf"])
+
+        if self.pega_cliente_por_cpf(novo_cliente.cpf) is None:
             self.__clientes.append(novo_cliente)
-            return novo_cliente
+            self.__tela_cliente.mostra_mensagem(f"{novo_cliente} cadastrado com sucesso.")
+        else:
+            self.__tela_cliente.mostra_mensagem("ATENCAO: Cpf ja cadastrado")
 
-    def altera_cliente_nome(self, cpf, nome):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                cliente.nome = nome
+    def altera_cliente(self):
+        self.listar_clientes()
+        dados = self.__tela_cliente.pega_dados_cliente()
+        cpf_amigo = dados["cpf"]
+        cliente = self.pega_cliente_por_cpf(cpf_amigo)
+        if cliente is not None:
+            novos_dados_cliente = self.__tela_cliente.pega_dados_cliente()
+            cliente.nome = novos_dados_cliente["nome"]
+            cliente.cpf = novos_dados_cliente["cpf"]
+            cliente.email = novos_dados_cliente["email"]
+            cliente.telefone = novos_dados_cliente["telefone"]
+            self.listar_clientes()
+        else:
+            self.__tela_cliente.mostra_mensagem("ATENCAO: Cliente não existente")
+
+    def exclui_cliente(self):
+        self.listar_clientes()
+        cpf_cliente = self.__tela_cliente.seleciona_cliente()
+        cliente = self.pega_cliente_por_cpf(cpf_cliente)
+        if cliente is not None:
+            self.__clientes.remove(cliente)
+        else:
+            self.__tela_cliente.mostra_mensagem("ATENCAO: Cliente nao existente")
+
+    def inclui_veiculo(self):
+        self.listar_clientes()
+        cpf = self.__tela_cliente.seleciona_cliente()
+        cliente = self.pega_cliente_por_cpf(cpf)
+        dados = self.__tela_cliente.pega_dados_moto()
+        nova_moto = Veiculo(dados["placa_moto"], dados["km_moto"], dados["modelo"])
+        if cliente is not None:
+            if self.pega_moto_por_placa(cliente, nova_moto.placa_moto) is None:
+                cliente.inclui_veiculo(nova_moto)
+            else:
+                self.__tela_cliente.mostra_mensagem("ATENCAO: Veiculo ja cadastrado.")
+        else:
+            self.__tela_cliente.mostra_mensagem("ATENCAO: Cliente não existe")
+
+    def exclui_veiculo(self):
+        self.listar_clientes()
+        cpf = self.__tela_cliente.seleciona_cliente()
+        cliente = self.pega_cliente_por_cpf(cpf)
+        if cliente is not None:
+            self.listar_veiculo(cliente)
+            placa_moto = self.__tela_cliente.seleciona_moto()
+            moto = self.pega_moto_por_placa(cliente, placa_moto)
+            if moto is not None:
+                cliente.veiculos.remove(moto)
+            else:
+                self.__tela_cliente.mostra_mensagem("ATENCAO: Moto nao cadastrada")
+        else:
+            self.__tela_cliente.mostra_mensagem("ATENCAO: Cliente nao cadastrado")
+
+    def altera_veiculo(self):
+        self.listar_clientes()
+        cpf_cliente = self.__tela_cliente.seleciona_cliente
+        cliente = self.pega_cliente_por_cpf(cpf_cliente)
+        if cliente is not None:
+            self.listar_veiculo(cliente)
+            placa = self.__tela_cliente.seleciona_moto()
+            novos_dados_moto = self.__tela_cliente.pega_dados_moto()
+            for veiculo in cliente.veiculos:
+                if veiculo.placa_moto == placa:
+                    veiculo.placa_moto = novos_dados_moto["placa"]
+                    veiculo.km_moto = novos_dados_moto["kilometragem"]
+                    veiculo.modelo = novos_dados_moto["modelo"]
+            else:
+                self.__tela_cliente.mostra_mensagem("ATENCAO: Nenhum veículo cadastrado com esta placa.")
+        else:
+            self.__tela_cliente.mostra_mensagem("ATENCAO: Nenhum cliente cadastrado com este CPF")
+
+    def listar_veiculo(self, cliente):
+        for cl in self.__clientes:
+            if cl.cpf == cliente.cpf:
+                return cliente.veiculos
         else:
             return None
 
-    def altera_cliente_email(self, cpf, novo_email):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                cliente.email = novo_email
-        else:
-            return None
+    def abre_tela(self):
+        lista_opcoes = {1: self.inclui_cliente, 2: self.altera_cliente, 3: self.listar_clientes,
+                        4: self.exclui_cliente, 5: self.inclui_veiculo, 6: self.altera_veiculo,
+                        7: self.exclui_veiculo, 8: self.listar_veiculo, 0: self.retornar}
 
-    def altera_cliente_telefone(self, cpf, novo_telefone):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                cliente.telefone = novo_telefone
-        else:
-            return None
+        continua = True
+        while continua:
+            lista_opcoes[self.__tela_cliente.tela_opcoes()]()
 
-    def altera_cliente_cpf(self, cpf, novo_cpf):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                cliente.cpf = novo_cpf
+    def retornar(self):
+        self.__controlador_sistema.abre_tela()
 
-    def exclui_cliente(self, cpf):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                self.__clientes.remove(cliente)
-                return cliente
-        else:
-            return None
-
-    def seleciona_cliente(self, cpf):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                return cliente
-        else:
-            return None
-
-    def inclui_veiculo(self, cpf, placa_moto, km_moto, modelo):
-        if isinstance(cpf, int) and isinstance(placa_moto, str) and isinstance(modelo, Modelo):
-            novo_veiculo = Veiculo(placa_moto, km_moto, modelo)
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                for veiculo in cliente.veiculos:
-                    if veiculo.placa_moto == placa_moto:
-                        return None
-                else:
-                    cliente.inclui_veiculo(novo_veiculo)
-                    return novo_veiculo
-        else:
-            return None
-
-    def exclui_veiculo(self, cpf, placa_moto):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                for veiculo in cliente.veiculos:
-                    if veiculo.placa_moto == placa_moto:
-                        cliente.exclui_veiculo(veiculo)
-                        return veiculo
-                    else:
-                        return None
-        else:
-            return None
-
-    def altera_placa_veiculo(self, cpf, placa_moto, nova_placa):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                for veiculo in cliente.veiculos:
-                    if veiculo.placa_moto == placa_moto:
-                        veiculo.placa_moto = nova_placa
-
-    def altera_km_veiculo(self, cpf, placa_moto, nova_km):
-        for cliente in self.__clientes:
-            if cliente.cpf == cpf:
-                for veiculo in cliente.veiculos:
-                    if veiculo.placa_moto == placa_moto:
-                        veiculo.km_moto = nova_km
-                        return veiculo
-        else:
-            return None
