@@ -1,20 +1,19 @@
-from entidade.oleo import Oleo
-from controlador_modelo import ControladorModelo
-from controlador_troca_de_oleo import ControladorTrocaDeOleo
-from controlador_oleo import ControladorOleo
-from controlador_cliente import ControladorCliente
-from controlador_fornecedor import ControladorFornecedor
+from controle.controlador_modelo import ControladorModelo
+from controle.controlador_troca_de_oleo import ControladorTrocaDeOleo
+from controle.controlador_oleo import ControladorOleo
+from controle.controlador_cliente import ControladorCliente
+from controle.controlador_fornecedor import ControladorFornecedor
 from limite.tela_sistema import TelaSistema
 
 
 class ControladorSistema:
     def __init__(self):
-        self.__controlador_oleo = ControladorOleo
-        self.__controlador_cliente = ControladorCliente
-        self.__controlador_fornecedor = ControladorFornecedor
-        self.__controlador_modelo = ControladorModelo
-        self.__controlador_troca_de_oleo = ControladorTrocaDeOleo
-        self._tela_sistema = TelaSistema()
+        self.__controlador_oleo = ControladorOleo(self)
+        self.__controlador_cliente = ControladorCliente(self)
+        self.__controlador_fornecedor = ControladorFornecedor()
+        self.__controlador_modelo = ControladorModelo(self)
+        self.__controlador_troca_de_oleo = ControladorTrocaDeOleo(self)
+        self.__tela_sistema = TelaSistema()
 
     @property
     def controlador_oleo(self):
@@ -35,21 +34,6 @@ class ControladorSistema:
     @property
     def controlador_troca_de_oleo(self):
         return self.__controlador_troca_de_oleo
-
-    def validar_cpf(self, cpf: str) -> bool:
-        cpf = ''.join(filter(str.isdigit, cpf))
-
-        if len(cpf) != 11 or cpf == cpf[0] * 11:
-            return False
-
-        for i in range(9, 11):
-            soma = sum(int(cpf[j]) * (i + 1 - j) for j in range(i))
-            digito = (soma * 10) % 11
-            if digito == 10:
-                digito = 0
-            if cpf[i] != str(digito):
-                return False
-        return True
 
     def validar_cnpj(self, cnpj: str) -> bool:
         cnpj = ''.join(filter(str.isdigit, cnpj))
