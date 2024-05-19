@@ -25,17 +25,17 @@ class ControladorModelo:
             self.__modelos.append(modelo)
     def alterar_modelo(self):
         self.lista_modelos()
-        cpf_amigo = self.__tela_amigo.seleciona_amigo()
-        amigo = self.pega_amigo_por_cpf(cpf_amigo)
+        modelo_codigo = self.__tela_modelo.seleciona_modelo()
+        modelo = self.pega_modelo_por_codigo(modelo_codigo)
 
-        if(amigo is not None):
-            novos_dados_amigo = self.__tela_amigo.pega_dados_amigo()
-            amigo.nome = novos_dados_amigo["nome"]
-            amigo.telefone = novos_dados_amigo["telefone"]
-            amigo.cpf = novos_dados_amigo["cpf"]
-            self.lista_amigos()
+        if(modelo is not None):
+            novos_dados_modelo = self.__tela_modelo.pega_dados_modelo()
+            modelo.nome = novos_dados_modelo["nome"]
+            modelo.quantidade_oleo = novos_dados_modelo["Quantidade de Oleo"]
+            modelo.codigo = novos_dados_modelo["Codigo"]
+            self.lista_modelos()
         else:
-            self.__tela_amigo.mostra_mensagem("ATENCAO: Amigo não existente")
+            self.__tela_modelo.mostra_mensagem("ATENCAO: Amigo não existente")
 
   # Sugestão: se a lista estiver vazia, mostrar a mensagem de lista vazia
     def lista_modelos(self):
