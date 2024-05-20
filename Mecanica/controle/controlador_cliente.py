@@ -118,6 +118,7 @@ class ControladorCliente:
             moto = self.pega_moto_por_placa(cliente, placa_moto)
             if moto is not None:
                 cliente.veiculos.remove(moto)
+                self.__tela_cliente.mostra_mensagem("Veiculo removido com sucesso.")
             else:
                 self.__tela_cliente.mostra_mensagem("ATENÇÃO: Moto não cadastrada")
         else:
@@ -135,6 +136,7 @@ class ControladorCliente:
                 if veiculo.placa_moto == placa:
                     veiculo.placa_moto = novos_dados_moto["placa"]
                     veiculo.km_moto = novos_dados_moto["kilometragem"]
+                    self.__tela_cliente.mostra_mensagem("Veiculo alterado com sucesso")
                     break
             else:
                 self.__tela_cliente.mostra_mensagem("ATENÇÃO: Nenhum veículo cadastrado com esta placa.")
@@ -147,6 +149,8 @@ class ControladorCliente:
         cliente = self.pega_cliente_por_cpf(cpf)
         if cliente is not None:
             self.listar_veiculos_cliente(cliente)
+        if len(cliente.veiculos) == 0:
+            self.__tela_cliente.mostra_mensagem("ATENCAO: Nenhum veiculo cadastrado.")
 
     def listar_veiculos_cliente(self, cliente):
         for veiculo in cliente.veiculos:
