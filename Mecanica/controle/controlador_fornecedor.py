@@ -14,6 +14,8 @@ class ControladorFornecedor:
         return self.__fornecedores
 
     def listar_fornecedores(self):
+        if len(self.__fornecedores) == 0:
+            self.__tela_fornecedor.mostra_mensagem("ATENCAO: Nenhum fornecedor cadastrado.")
         for fornecedor in self.__fornecedores:
             self.__tela_fornecedor.mostra_fornecedor({
                 "nome": fornecedor.nome,
