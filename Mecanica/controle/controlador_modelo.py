@@ -39,14 +39,16 @@ class ControladorModelo:
         if modelo is not None:
             novos_dados_modelo = self.__tela_modelo.pega_dados_modelo()
             modelo.nome = novos_dados_modelo["nome"]
-            modelo.quantidade_oleo = novos_dados_modelo["Quantidade de Oleo"]
-            modelo.codigo = novos_dados_modelo["Codigo"]
+            modelo.quantidade_oleo = novos_dados_modelo["Quantidade de oleo"]
+            modelo.expessura = novos_dados_modelo["expessura"]
             self.lista_modelos()
         else:
             self.__tela_modelo.mostra_mensagem("ATENCAO: Amigo não existente")
 
 
     def lista_modelos(self):
+        if len(self.__modelos) == 0:
+            return self.__tela_modelo.mostra_mensagem("ATENCAO: Nenhum modelo cadastrado.")
         for modelo in self.__modelos:
             self.__tela_modelo.mostra_modelo({"nome": modelo.nome, "quantidade_oleo": modelo.quantidade_oleo, "expessura": modelo.expessura, "codigo": modelo.codigo})
 
@@ -58,6 +60,7 @@ class ControladorModelo:
         if modelo is not None:
           self.__modelos.remove(modelo)
           self.lista_modelos()
+          self.__tela_modelo.mostra_mensagem("Modelo removido com sucesso.")
         else:
           self.__tela_modelo.mostra_mensagem("ATENCAO: Modelo não existente")
 
@@ -69,20 +72,22 @@ class ControladorModelo:
             if modelo.expessura == oleo.expessura:
                 modelo.incluir_oleo(oleo)
 
-    def remover_oleo(self, modelo, oleo):
+    def remover_oleo(self, oleo):
         for md in self.__modelos:
-            if md.codigo == modelo.codigo:
-                if modelo.exclui_oleo(oleo) is not None:
-                    return "Modelo Removido"
-            else:
-                return "Oleo nao encontrado"
+            if md.expessura == oleo.expessura:
+                for ol in md.oleos:
+                    if ol.codigo == oleo.codigo:
+                        if md.exclui_oleo(oleo) is not None:
+                            return "Oleo Removido"
+                else:
+                    return "Oleo nao encontrado"
         else:
             return "Modelo nao encontrado"
     def listar_oleos(self):
         codigo = self.__tela_modelo.seleciona_modelo()
         modelo = self.pega_modelo_por_codigo(codigo)
-        for oleo in modelo:
-            self.__controlador_sistema.controlador_oleo.mostra_oleo({"fornecedor": oleo.fornecedor, "expessura": oleo.expessura, "marca": oleo.marca, "valor": oleo.valor, "codigo": oleo.codigo})
+        for oleo in modelo.oleos:
+            self.__tela_modelo.mostra_oleo_modelo({"fornecedor": oleo.fornecedor.cnpj, "marca": oleo.marca, "valor": oleo.valor, "codigo": oleo.codigo})
 
 
 
