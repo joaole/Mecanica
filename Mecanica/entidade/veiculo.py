@@ -3,7 +3,8 @@ from entidade.modelo import Modelo
 
 class Veiculo:
     def __init__(self, placa_moto: str, km_moto: float, modelo: Modelo):
-        self.__modelo = modelo
+        if isinstance(modelo, Modelo):
+            self.__modelo = modelo
         self.__km_moto = km_moto
         self.__placa_moto = placa_moto
 
@@ -13,7 +14,8 @@ class Veiculo:
 
     @modelo.setter
     def modelo(self, modelo):
-        self.__modelo = modelo
+        if isinstance(modelo, Modelo):
+            self.__modelo = modelo
 
     @property
     def km_moto(self):
