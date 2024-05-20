@@ -18,12 +18,18 @@ class TelaModelo:
         print("-------- DADOS MODELO ----------")
         nome = input("Nome: ")
         quantidade_oleo = input("Quantidade de Oleo: ")
-        codigo = input("Codigo: ")
+        expessura = input("Expessura de oleo: ")
 
-        return {"nome": nome, "Quantidade de oleo": quantidade_oleo, "Codigo": codigo}
+        return {"nome": nome, "Quantidade de oleo": quantidade_oleo, "expessura": expessura}
 
   # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
     def mostra_modelo(self, dados_modelo):
+        print("NOME DO MODELO: ", dados_modelo["nome"])
+        print("QUANTIDADE DE OLEO: ", dados_modelo["quantidade_oleo"])
+        print("CODIGO DO MODELO: ", dados_modelo["codigo"])
+        print("\n")
+
+    def mostra_oleo_modelo(self, dados_modelo):
         print("NOME DO MODELO: ", dados_modelo["nome"])
         print("QUANTIDADE DE OLEO: ", dados_modelo["quantidade_oleo"])
         print("CODIGO DO MODELO: ", dados_modelo["codigo"])
