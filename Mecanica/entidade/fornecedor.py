@@ -13,5 +13,3 @@ class Fornecedor(Pessoa):
     @cnpj.setter
     def cnpj(self, cnpj):
         self.__cnpj = cnpj
-fornecedor = Fornecedor('Cleverson', '5555', 'uhuhuh', 556)
-print(fornecedor.nome)
