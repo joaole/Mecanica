@@ -22,9 +22,13 @@ class TelaCliente:
         cpf = input("CPF do cliente que deseja selecionar: ")
         return cpf
 
+    def pega_codigo_modelo(self):
+        codigo_modelo = input("CODIGO DE MODELO DO VEICULO: ")
+        return codigo_modelo
+
     def pega_dados_moto(self):
         print("-------- DADOS MOTO ----------")
-        modelo_moto = input("Modelo ")
+        modelo_moto = input("Codigo de Modelo ")
         placa_moto = input("Placa: ")
         km_moto = input("Kilometragem: ")
 
