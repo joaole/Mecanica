@@ -8,21 +8,28 @@ class ControladorModelo:
         self.__tela_modelo = TelaModelo()
         self.__controlador_sistema = controlador_sistema
 
+    def gerar_codigo(self):
+        codigo = str(len(self.__modelos) + 1)
+        return codigo
+
     def pega_modelo_por_codigo(self, codigo: int):
         for modelo in self.__modelos:
-            if(modelo.codigo == codigo):
+            if modelo.codigo == codigo:
                 return modelo
         return None
 
     def incluir_modelo(self):
         dados_modelo = self.__tela_modelo.pega_dados_modelo()
-        modelo = Modelo(dados_modelo["nome"], dados_modelo["Quantidade de oleo"], dados_modelo["Codigo"])
 
         for m in self.__modelos:
-            if m.codigo == modelo.codigo:
-                return 'Modelo ja existente'
+            if m.nome == dados_modelo["nome"] and m.expessura == dados_modelo["expessura"] and m.quantidade_oleo == dados_modelo["Quantidade de oleo"]:
+                self.__tela_modelo.mostra_mensagem("ATENCAO: Modelo já existente")
+                break
         else:
-            self.__modelos.append(modelo)
+            codigo = self.gerar_codigo()
+            novo_modelo = Modelo(dados_modelo["nome"], dados_modelo["expessura"], dados_modelo["Quantidade de oleo"], codigo)
+            self.__modelos.append(novo_modelo)
+            self.__tela_modelo.mostra_mensagem("Modelo cadastrado com sucesso")
 
     def alterar_modelo(self):
         self.lista_modelos()
@@ -41,7 +48,7 @@ class ControladorModelo:
 
     def lista_modelos(self):
         for modelo in self.__modelos:
-            self.__tela_modelo.mostra_modelo({"nome": modelo.nome, "quantidade_oleo": modelo.quantidade_oleo, "codigo": modelo.codigo})
+            self.__tela_modelo.mostra_modelo({"nome": modelo.nome, "quantidade_oleo": modelo.quantidade_oleo, "expessura": modelo.expessura, "codigo": modelo.codigo})
 
     def excluir_modelo(self):
         self.lista_modelos()
@@ -57,8 +64,30 @@ class ControladorModelo:
     def retornar(self):
         self.__controlador_sistema.abre_tela()
 
+    def adicionar_oleo(self, oleo):
+        for modelo in self.__modelos:
+            if modelo.expessura == oleo.expessura:
+                modelo.incluir_oleo(oleo)
+
+    def remover_oleo(self, modelo, oleo):
+        for md in self.__modelos:
+            if md.codigo == modelo.codigo:
+                if modelo.exclui_oleo(oleo) is not None:
+                    return "Modelo Removido"
+            else:
+                return "Oleo nao encontrado"
+        else:
+            return "Modelo nao encontrado"
+    def listar_oleos(self):
+        codigo = self.__tela_modelo.seleciona_modelo()
+        modelo = self.pega_modelo_por_codigo(codigo)
+        for oleo in modelo:
+            self.__controlador_sistema.controlador_oleo.mostra_oleo({"fornecedor": oleo.fornecedor, "expessura": oleo.expessura, "marca": oleo.marca, "valor": oleo.valor, "codigo": oleo.codigo})
+
+
+
     def abre_tela(self):
-        lista_opcoes = {1: self.incluir_modelo, 2: self.alterar_modelo, 3: self.lista_modelos, 4: self.excluir_modelo, 0: self.retornar}
+        lista_opcoes = {1: self.incluir_modelo, 2: self.alterar_modelo, 3: self.lista_modelos, 4: self.excluir_modelo, 5: self.listar_oleos, 0: self.retornar}
 
         continua = True
         while continua:
