@@ -39,8 +39,7 @@ class ControladorCliente:
 
     def altera_cliente(self):
         self.listar_clientes()
-        dados = self.__tela_cliente.pega_dados_cliente()
-        cpf_amigo = dados["cpf"]
+        cpf_amigo = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf_amigo)
         if cliente is not None:
             novos_dados_cliente = self.__tela_cliente.pega_dados_cliente()
@@ -48,7 +47,7 @@ class ControladorCliente:
             cliente.cpf = novos_dados_cliente["cpf"]
             cliente.email = novos_dados_cliente["email"]
             cliente.telefone = novos_dados_cliente["telefone"]
-            self.listar_clientes()
+            self.__tela_cliente.mostra_mensagem("Cliente removido")
         else:
             self.__tela_cliente.mostra_mensagem("ATENCAO: Cliente não existente")
 
