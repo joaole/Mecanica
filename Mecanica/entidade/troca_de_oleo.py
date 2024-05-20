@@ -3,18 +3,13 @@ from entidade.cliente import Cliente
 from entidade.oleo import Oleo
 
 class TrocaDeOleo:
-    def __init__(self, veiculo, cliente, oleo, data_saida, data_entrada, codigo):
-        if isinstance(veiculo, Veiculo):
-            self.__veiculo = veiculo
-        if isinstance(cliente, Cliente):
-            self.__cliente = cliente
-        if isinstance(oleo, Oleo):
-            self.__oleo = oleo
-        self.__data_saida = data_saida
+    def __init__(self, Veiculo, cliente, data_entrada, data_saida, codigo):
+        self.__veiculo = Veiculo
+        self.__cliente = cliente
+        self.__valor_final = None
         self.__codigo = codigo
         self.__data_entrada = data_entrada
-        self.__valor_final = None
-        self.__quantidade_oleo = 0
+        self.__data_saida = data_saida
 
     @property
     def veiculo(self):
@@ -35,20 +30,8 @@ class TrocaDeOleo:
             self.__cliente = cliente
 
     @property
-    def data_saida(self):
-        return self.__data_saida
-
-    @data_saida.setter
-    def data_saida(self, data_saida):
-        self.__data_saida = data_saida
-
-    @property
     def valor_final(self):
         return self.__valor_final
-
-    @valor_final.setter
-    def valor_final(self, valor_final):
-        self.__valor_final = valor_final
 
     @property
     def codigo(self):
@@ -66,10 +49,13 @@ class TrocaDeOleo:
     def data_entrada(self, data_entrada):
         self.__data_entrada = data_entrada
 
-    @property
-    def quantidade_oleo(self):
-        return self.__quantidade_oleo
+    def valor_final(self):
+        self.__valor_final = Veiculo.modelo.quantidade_oleo() * Oleo.valor
 
-    @quantidade_oleo.setter
-    def quantidade_oleo(self, quantidade_oleo):
-        self.__quantidade_oleo = quantidade_oleo
+    @property
+    def data_saida(self):
+        return self.__data_saida
+
+    @data_saida.setter
+    def data_saida(self, data_saida):
+        self.__data_saida = data_saida
