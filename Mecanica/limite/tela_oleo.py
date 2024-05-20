@@ -14,6 +14,10 @@ class TelaOleo:
         opcao = int(input("Escolha a opcao: "))
         return opcao
 
+    def seleciona_fornecedor(self):
+        cnpj = input("CNPJ do fornecedor que deseja adicionar Oleo: ")
+        return cnpj
+
     def seleciona_oleo(self):
         codigo = input("Codigo do oleo que deseja selecionar: ")
         return codigo
@@ -24,16 +28,15 @@ class TelaOleo:
 
     def pega_dados_oleo(self):
         print("-------- DADOS OLEO ----------")
-        fornecedor = input("Fornecedor: ")
         marca = input("Marca: ")
         expessura = input("Expessura: ")
         valor = input("Valor: ")
 
-        return {"fornecedor": fornecedor, "marca": marca, "expessura": expessura, "valor": valor}
+        return {"marca": marca, "expessura": expessura, "valor": valor}
 
     def mostra_oleo(self, dados_oleo):
         if isinstance(dados_oleo, dict):
-            print("FORNECEDOR: ", dados_oleo["fornecedor"])
+            print("CNPJ DO FORNECEDOR: ", dados_oleo["fornecedor"])
             print("MARCA DO OLEO: ", dados_oleo["marca"])
             print("EXPESSURA DO OLEO: ", dados_oleo["expessura"])
             print("VALOR DO OLEO: ", dados_oleo["valor"])
