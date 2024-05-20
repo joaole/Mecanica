@@ -40,8 +40,8 @@ class ControladorOleo:
                     codigo = oleo.codigo
                     novo_oleo = Oleo(fornecedor, dados["marca"], dados["expessura"], dados["valor"], codigo)
                     self.__oleos.append(novo_oleo)
-                    self.__controlador_sistema.controlador_modelo.adicionar_oleo(oleo)
-                    self.__controlador_sistema.controlador_fornecedor.remover_oleo(oleo)
+                    self.__controlador_sistema.controlador_modelo.adicionar_oleo(novo_oleo)
+                    self.__controlador_sistema.controlador_modelo.remover_oleo(oleo)
                     self.__oleos.remove(oleo)
                     self.__tela_oleo.mostra_mensagem("Oleo cadastrado com sucesso")
                     break
@@ -49,6 +49,7 @@ class ControladorOleo:
                 codigo = self.gerar_codigo()
                 novo_oleo = Oleo(fornecedor, dados["marca"], dados["expessura"], dados["valor"], codigo)
                 self.__oleos.append(novo_oleo)
+                self.__controlador_sistema.controlador_modelo.adicionar_oleo(novo_oleo)
                 self.__tela_oleo.mostra_mensagem("Oleo cadastrado com sucesso")
         else:
             self.__tela_oleo.mostra_mensagem("ATENCAO: Fornecedor nao cadastrado")
@@ -76,21 +77,24 @@ class ControladorOleo:
             self.__tela_oleo.mostra_mensagem("ATENCAO: Oleo não encontrado")
 
     def lista_oleo(self):
+        if len(self.__oleos) == 0:
+            self.__tela_oleo.mostra_mensagem("ATENCAO: Nenhum oleo cadastrado")
         for oleo in self.__oleos:
             self.__tela_oleo.mostra_oleo({"fornecedor": oleo.fornecedor.cnpj, "expessura": oleo.expessura, "marca": oleo.marca, "valor": oleo.valor, "codigo": oleo.codigo})
 
-    def lista_oleo_expessura(self):
+    def lista_oleo_por_expessura(self):
+        self.lista_oleo()
         lista_oleos_expessura = []
         expessura = self.__tela_oleo.seleciona_expessura()
         for oleo in self.__oleos:
             if oleo.expessura == expessura:
                 lista_oleos_expessura.append(oleo)
-                self.__tela_oleo.mostra_oleo({"fornecedor": oleo.fornecedor, "expessura": oleo.expessura, "marca": oleo.marca, "valor": oleo.valor, "codigo": oleo.codigo})
+                self.__tela_oleo.mostra_oleo({"fornecedor": oleo.fornecedor.cnpj, "expessura": oleo.expessura, "marca": oleo.marca, "valor": oleo.valor, "codigo": oleo.codigo})
         if len(lista_oleos_expessura) == 0:
             self.__tela_oleo.mostra_mensagem("ATENCAO: Nenhum oleo cadastrado com essa expessura")
 
     def abre_tela(self):
-        lista_opcoes = {1: self.inclui_oleo, 2: self.altera_oleo, 3: self.lista_oleo_expessura,
+        lista_opcoes = {1: self.inclui_oleo, 2: self.altera_oleo, 3: self.lista_oleo_por_expessura,
                         4: self.exclui_oleo, 5: self.lista_oleo, 0: self.retornar}
 
         continua = True
