@@ -92,13 +92,19 @@ class ControladorCliente:
         self.listar_clientes()
         cpf = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf)
-        dados = self.__tela_cliente.pega_dados_moto()
-        nova_moto = Veiculo(dados["placa"], dados["kilometragem"], dados["modelo"])
         if cliente is not None:
-            if self.pega_moto_por_placa(cliente, nova_moto.placa_moto) is None:
-                cliente.inclui_veiculo(nova_moto)
+            self.__controlador_sistema.controlador_modelo.lista_modelos()
+            dados = self.__tela_cliente.pega_dados_moto()
+            modelo = self.__controlador_sistema.controlador_modelo.pega_modelo_por_codigo(dados["modelo"])
+            if modelo is not None:
+                nova_moto = Veiculo(dados["placa"], dados["kilometragem"], modelo)
+                if self.pega_moto_por_placa(cliente, nova_moto.placa_moto) is None:
+                    cliente.inclui_veiculo(nova_moto)
+                    self.__tela_cliente.mostra_mensagem("Veiculo cadastrado com sucesso")
+                else:
+                    self.__tela_cliente.mostra_mensagem("ATENÇÃO: Veículo já cadastrado.")
             else:
-                self.__tela_cliente.mostra_mensagem("ATENÇÃO: Veículo já cadastrado.")
+                self.__tela_cliente.mostra_mensagem("ATENCAO: Modelo nao existente")
         else:
             self.__tela_cliente.mostra_mensagem("ATENÇÃO: Cliente não existe")
 
@@ -107,7 +113,7 @@ class ControladorCliente:
         cpf = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf)
         if cliente is not None:
-            self.listar_veiculos()
+            self.listar_veiculos_cliente(cliente)
             placa_moto = self.__tela_cliente.seleciona_moto()
             moto = self.pega_moto_por_placa(cliente, placa_moto)
             if moto is not None:
@@ -122,26 +128,30 @@ class ControladorCliente:
         cpf_cliente = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf_cliente)
         if cliente is not None:
-            self.listar_veiculos()
+            self.listar_veiculos_cliente(cliente)
             placa = self.__tela_cliente.seleciona_moto()
             novos_dados_moto = self.__tela_cliente.pega_dados_moto()
             for veiculo in cliente.veiculos:
                 if veiculo.placa_moto == placa:
                     veiculo.placa_moto = novos_dados_moto["placa"]
                     veiculo.km_moto = novos_dados_moto["kilometragem"]
-                    veiculo.modelo = novos_dados_moto["modelo"]
+                    break
             else:
                 self.__tela_cliente.mostra_mensagem("ATENÇÃO: Nenhum veículo cadastrado com esta placa.")
         else:
             self.__tela_cliente.mostra_mensagem("ATENÇÃO: Nenhum cliente cadastrado com este CPF")
 
     def listar_veiculos(self):
+        self.listar_clientes()
         cpf = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf)
         if cliente is not None:
-            for veiculo in cliente.veiculos:
-                self.__tela_cliente.mostra_veiculo({
-                    "modelo": veiculo.modelo,
+            self.listar_veiculos_cliente(cliente)
+
+    def listar_veiculos_cliente(self, cliente):
+        for veiculo in cliente.veiculos:
+            self.__tela_cliente.mostra_veiculo({
+                    "modelo": veiculo.modelo.nome,
                     "kilometragem": veiculo.km_moto,
                     "placa": veiculo.placa_moto
                 })
