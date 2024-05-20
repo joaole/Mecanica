@@ -5,14 +5,10 @@ class Oleo:
     def __init__(self, fornecedor, marca, expessura, valor, codigo):
         if isinstance(fornecedor, Fornecedor):
             self.__fornecedor = fornecedor
-        if isinstance(marca, str):
-            self.__marca = marca
-        if isinstance(expessura, str):
-            self.__expessura = expessura
-        if isinstance(valor, float):
-            self.__valor = valor
-        if isinstance(codigo, int):
-            self.__codigo = codigo
+        self.__marca = marca
+        self.__expessura = expessura
+        self.__valor = valor
+        self.__codigo = codigo
 
     @property
     def fornecedor(self):
