@@ -3,16 +3,16 @@ from controle.controlador_troca_de_oleo import ControladorTrocaDeOleo
 from controle.controlador_oleo import ControladorOleo
 from controle.controlador_cliente import ControladorCliente
 from controle.controlador_fornecedor import ControladorFornecedor
-from limite.tela_sistemas import TelaSistema
+from limite.tela_sistema import TelaSistema
 
 
 class ControladorSistema:
     def __init__(self):
         self.__controlador_oleo = ControladorOleo(self)
         self.__controlador_cliente = ControladorCliente(self)
-        self.__controlador_fornecedor = ControladorFornecedor()
+        self.__controlador_fornecedor = ControladorFornecedor(self)
         self.__controlador_modelo = ControladorModelo(self)
-        self.__controlador_troca_de_oleo = ControladorTrocaDeOleo()
+        self.__controlador_troca_de_oleo = ControladorTrocaDeOleo(self)
         self.__tela_sistema = TelaSistema()
 
     @property
@@ -40,17 +40,6 @@ class ControladorSistema:
 
         if len(cnpj) != 14 or cnpj == cnpj[0] * 14:
             return False
-
-        def calcular_digito(cnpj, pesos):
-            soma = sum(int(cnpj[i]) * peso for i, peso in enumerate(pesos))
-            resto = soma % 11
-            return '0' if resto < 2 else str(11 - resto)
-
-        pesos1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-        pesos2 = [6] + pesos1
-
-        return (cnpj[12] == calcular_digito(cnpj[:12], pesos1) and
-                cnpj[13] == calcular_digito(cnpj[:13], pesos2))
 
     def cadastrar_oleo(self):
         self.__controlador_oleo.abre_tela()
