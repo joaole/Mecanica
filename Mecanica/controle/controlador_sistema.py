@@ -35,12 +35,6 @@ class ControladorSistema:
     def controlador_troca_de_oleo(self):
         return self.__controlador_troca_de_oleo
 
-    def validar_cnpj(self, cnpj: str) -> bool:
-        cnpj = ''.join(filter(str.isdigit, cnpj))
-
-        if len(cnpj) != 14 or cnpj == cnpj[0] * 14:
-            return False
-
     def cadastrar_oleo(self):
         self.__controlador_oleo.abre_tela()
 
