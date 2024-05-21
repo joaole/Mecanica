@@ -45,7 +45,6 @@ class ControladorModelo:
         else:
             self.__tela_modelo.mostra_mensagem("ATENCAO: Amigo não existente")
 
-
     def lista_modelos(self):
         if len(self.__modelos) == 0:
             return self.__tela_modelo.mostra_mensagem("ATENCAO: Nenhum modelo cadastrado.")
@@ -84,8 +83,13 @@ class ControladorModelo:
         else:
             return "Modelo nao encontrado"
     def listar_oleos(self):
+        self.lista_modelos()
         codigo = self.__tela_modelo.seleciona_modelo()
         modelo = self.pega_modelo_por_codigo(codigo)
+        if modelo is not None:
+            self.listar_oleos_do_modelo(modelo)
+
+    def listar_oleos_do_modelo(self, modelo):
         for oleo in modelo.oleos:
             self.__tela_modelo.mostra_oleo_modelo({"fornecedor": oleo.fornecedor.cnpj, "marca": oleo.marca, "valor": oleo.valor, "codigo": oleo.codigo})
 
