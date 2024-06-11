@@ -1,129 +1,109 @@
-from entidade.fornecedor import Fornecedor
-from limite.tela_fornecedor import TelaFornecedor
-import re
+import PySimpleGUI as sg
 
+class TelaFornecedor():
+  def __init__(self):
+    self.__window = None
+    self.init_opcoes()
 
-class ControladorFornecedor:
-    def __init__(self, controlador_sistema):
-        self.__controlador_sistema = controlador_sistema
-        self.__tela_fornecedor = TelaFornecedor()
-        self.__fornecedores = []
+  # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
+  def tela_opcoes(self):
+    self.init_opcoes()
+    button, values = self.open()
+    if values['1']:
+      opcao = 1
+    if values['2']:
+      opcao = 2
+    if values['3']:
+      opcao = 3
+    if values['4']:
+      opcao = 4
+    # cobre os casos de Retornar, fechar janela, ou clicar cancelar
+    #Isso faz com que retornemos a tela do sistema caso qualquer uma dessas coisas aconteca
+    if values['0'] or button in (None, 'Cancelar'):
+      opcao = 0
+    self.close()
+    return opcao
 
-    @property
-    def fornecedores(self):
-        return self.__fornecedores
+  def init_opcoes(self):
+    #sg.theme_previewer()
+    sg.ChangeLookAndFeel('DarkTeal4')
+    layout = [
+      [sg.Text('-------- FORNECEDORES ----------', font=("Helvica", 25))],
+      [sg.Text('Escolha sua opção', font=("Helvica", 15))],
+      [sg.Radio('Incluir Fornecedor', "RD1", key='1')],
+      [sg.Radio('Listar Fornecedores', "RD1", key='3')],
+      [sg.Radio('Retornar', "RD1", key='0')],
+      [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+    ]
+    self.__window = sg.Window('Sistema de livros').Layout(layout)
 
-    def listar_fornecedores(self):
-        if len(self.__fornecedores) == 0:
-            self.__tela_fornecedor.mostra_mensagem("ATENCAO: Nenhum fornecedor cadastrado.")
-        else:
-            lista_fornecedores = []
-            for fornecedor in self.__fornecedores:
-                lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj])
+  # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
+  # opção de tratamento: adicionar um if e só coletar nome e telefone se o button é 'Confirmar'
+  def pega_dados_fornecedor(self):
+    sg.ChangeLookAndFeel('DarkTeal4')
+    layout = [
+      [sg.Text('-------- DADOS FORNECEDOR ----------', font=("Helvica", 25))],
+      [sg.Text('Nome:', size=(15, 1)), sg.InputText('', key='nome')],
+      [sg.Text('Telefone:', size=(15, 1)), sg.InputText('', key='telefone')],
+      [sg.Text('CNPJ:', size=(15, 1)), sg.InputText('', key='cnpj')],
+      [sg.Text('EMAIL:', size=(15, 1)), sg.InputText('', key='email')],
+      [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+    ]
+    self.__window = sg.Window('FORNECEDOR').Layout(layout)
 
-            self.__tela_fornecedor.mostra_fornecedor(lista_fornecedores)
+    button, values = self.open()
+    nome = values['nome']
+    telefone = values['telefone']
+    cnpj = values['cnpj']
+    email = values['email']
 
-    def altera_fornecedor(self):
-        self.listar_fornecedores()
-        cnpj = self.__tela_fornecedor.seleciona_fornecedor()
-        fornecedor = self.pega_fornecedor_por_cnpj(cnpj)
-        if fornecedor is not None:
-            dados = self.__tela_fornecedor.pega_dados_fornecedor()
-            if not self.verifica_cnpj(dados["cnpj"]):
-                self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: CNPJ inválido")
-                return
-            if not self.verifica_telefone(dados["telefone"]):
-                self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: Telefone inválido")
-                return
-            if not self.verifica_email(dados["email"]):
-                self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: Email inválido")
-                return
-            fornecedor.nome = dados["nome"]
-            fornecedor.telefone = dados["telefone"]
-            fornecedor.email = dados["email"]
-            fornecedor.cnpj = dados["cnpj"]
-            self.__tela_fornecedor.mostra_mensagem("Fornecedor alterado com sucesso")
-        else:
-            self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: Fornecedor não cadastrado")
+    self.close()
+    return {"nome": nome, "telefone": telefone, "cnpj": cnpj, 'email': email}
 
-    def pega_fornecedor_por_cnpj(self, cnpj):
-        for fornecedor in self.__fornecedores:
-            if fornecedor.cnpj == cnpj:
-                return fornecedor
-        return None
+  # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
+  def mostra_fornecedor(self, dados_fornecedor):
+    layout = [
+              [sg.Table(values= dados_fornecedor, headings=['nome', 'cnpj'], max_col_width=25, background_color='DarkTeal4',
+                        auto_size_columns=True,
+                        display_row_numbers=True,
+                        justification='right',
+                        num_rows=20,
+                        alternating_row_color='lightyellow',
+                        key='-TABLE-',
+                        tooltip='This is a table')],
 
-    def inclui_fornecedor(self):
-        dados = self.__tela_fornecedor.pega_dados_fornecedor()
-        cnpj = dados["cnpj"]
+              [sg.Button('Incluir', key=1), sg.Button('Alterar', key=2)], sg.Button('Excluir', key=3), sg.Button('Voltar', key=0),
+    ]
 
-        if not self.verifica_cnpj(cnpj):
-            self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: CNPJ inválido")
-            return
-        if not self.verifica_telefone(dados["telefone"]):
-            self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: Telefone inválido")
-            return
-        if not self.verifica_email(dados["email"]):
-            self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: Email inválido")
-            return
+    self.__window = sg.Window('Lista de Fornecedores').Layout(layout)
 
-        novo_fornecedor = Fornecedor(dados["nome"], dados["telefone"], dados["email"], cnpj)
-        if self.pega_fornecedor_por_cnpj(novo_fornecedor.cnpj) is None:
-            self.__fornecedores.append(novo_fornecedor)
-            self.__tela_fornecedor.mostra_mensagem("Fornecedor cadastrado com sucesso")
-        else:
-            self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: CNPJ duplicado")
+    button, values = self.open()
 
-    def exclui_fornecedor(self):
-        self.listar_fornecedores()
-        cnpj_fornecedor = self.__tela_fornecedor.seleciona_fornecedor()
-        fornecedor = self.pega_fornecedor_por_cnpj(cnpj_fornecedor)
-        if fornecedor is not None:
-            self.__fornecedores.remove(fornecedor)
-            self.__tela_fornecedor.mostra_mensagem("Fornecedor removido com sucesso")
-        else:
-            self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: Fornecedor não cadastrado")
+    self.close()
+    return button, values
 
-    def verifica_cnpj(self, cnpj):
-        cnpj = ''.join(filter(str.isdigit, cnpj))
+  # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
+  def seleciona_fornecedor(self):
+    sg.ChangeLookAndFeel('DarkTeal4')
+    layout = [
+      [sg.Text('-------- SELECIONAR FORNECEDOR ----------', font=("Helvica", 25))],
+      [sg.Text('Digite o CNPJ do fornecedor que deseja selecionar:', font=("Helvica", 15))],
+      [sg.Text('CNPJ:', size=(15, 1)), sg.InputText('', key='cnpj')],
+      [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+    ]
+    self.__window = sg.Window('Seleciona Fornecedor').Layout(layout)
 
-        if len(cnpj) != 14 or cnpj == cnpj[0] * 14:
-            return False
+    button, values = self.open()
+    cnpj = values['cnpj']
+    self.close()
+    return cnpj
 
-        def calcular_digito(cnpj, pesos):
-            soma = sum(int(cnpj[i]) * peso for i, peso in enumerate(pesos))
-            resto = soma % 11
-            return '0' if resto < 2 else str(11 - resto)
+  def mostra_mensagem(self, msg):
+    sg.popup("", msg)
 
-        pesos1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
-        pesos2 = [6] + pesos1
+  def close(self):
+    self.__window.Close()
 
-        return (cnpj[12] == calcular_digito(cnpj[:12], pesos1) and
-                cnpj[13] == calcular_digito(cnpj[:13], pesos2))
-
-    def verifica_telefone(self, telefone):
-        telefone = ''.join(filter(str.isdigit, telefone))
-        return len(telefone) in [10, 11]
-
-    def verifica_email(self, email):
-        pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        return re.match(pattern, email) is not None
-
-    def abre_tela(self):
-        lista_opcoes = {
-            1: self.inclui_fornecedor,
-            2: self.altera_fornecedor,
-            3: self.listar_fornecedores,
-            4: self.exclui_fornecedor,
-            0: self.retornar
-        }
-
-        continua = True
-        while continua:
-            opcao = self.__tela_fornecedor.tela_opcoes()
-            if opcao in lista_opcoes:
-                lista_opcoes[opcao]()
-            else:
-                self.__tela_fornecedor.mostra_mensagem("Opção inválida")
-
-    def retornar(self):
-        self.__controlador_sistema.abre_tela()
+  def open(self):
+    button, values = self.__window.Read()
+    return button, values
