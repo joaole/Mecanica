@@ -16,13 +16,12 @@ class ControladorFornecedor:
     def listar_fornecedores(self):
         if len(self.__fornecedores) == 0:
             self.__tela_fornecedor.mostra_mensagem("ATENCAO: Nenhum fornecedor cadastrado.")
-        for fornecedor in self.__fornecedores:
-            self.__tela_fornecedor.mostra_fornecedor({
-                "nome": fornecedor.nome,
-                "email": fornecedor.email,
-                "telefone": fornecedor.telefone,
-                "cnpj": fornecedor.cnpj
-            })
+        else:
+            lista_fornecedores = []
+            for fornecedor in self.__fornecedores:
+                lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj])
+
+            self.__tela_fornecedor.mostra_fornecedor(lista_fornecedores)
 
     def altera_fornecedor(self):
         self.listar_fornecedores()
