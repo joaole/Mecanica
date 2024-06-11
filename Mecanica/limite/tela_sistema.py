@@ -8,7 +8,7 @@ class TelaSistema:
 # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
 # precisa chamar self.init_components() aqui para o caso de chamar essa janela uma 2a vez. Não é possível reusar layouts de janelas depois de fechadas.
     def tela_opcoes(self):
-        sg.ChangeLookAndFeel('Blue')
+        sg.ChangeLookAndFeel('DarkTeal4')
         self.init_components()
         button, values = self.__window.Read()
         opcao = 0
@@ -18,6 +18,9 @@ class TelaSistema:
             opcao = 2
         if values['3']:
             opcao = 3
+        if values['4']:
+            opcao = 4
+
         # cobre os casos de voltar, não clicar em nada e fechar janela, ou clicar cancelar
         if values['0'] or button in (None,'Cancelar'):
             opcao = 0
@@ -40,4 +43,4 @@ class TelaSistema:
             [sg.Radio('Finalizar sistema',"RD1", key='0')],
             [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
-        self.__window = sg.Window('Sistema de livros').Layout(layout)
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
