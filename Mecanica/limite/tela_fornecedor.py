@@ -13,10 +13,6 @@ class TelaFornecedor():
       opcao = 1
     if values['2']:
       opcao = 2
-    if values['3']:
-      opcao = 3
-    if values['4']:
-      opcao = 4
     # cobre os casos de Retornar, fechar janela, ou clicar cancelar
     #Isso faz com que retornemos a tela do sistema caso qualquer uma dessas coisas aconteca
     if values['0'] or button in (None, 'Cancelar'):
@@ -31,11 +27,11 @@ class TelaFornecedor():
       [sg.Text('-------- FORNECEDORES ----------', font=("Helvica", 25))],
       [sg.Text('Escolha sua opção', font=("Helvica", 15))],
       [sg.Radio('Incluir Fornecedor', "RD1", key='1')],
-      [sg.Radio('Listar Fornecedores', "RD1", key='3')],
+      [sg.Radio('Listar Fornecedores', "RD1", key='2')],
       [sg.Radio('Retornar', "RD1", key='0')],
       [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
     ]
-    self.__window = sg.Window('Sistema de livros').Layout(layout)
+    self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
 
   # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
   # opção de tratamento: adicionar um if e só coletar nome e telefone se o button é 'Confirmar'
