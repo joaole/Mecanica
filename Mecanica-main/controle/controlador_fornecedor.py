@@ -1,5 +1,6 @@
 from entidade.fornecedor import Fornecedor
 from limite.tela_fornecedor import TelaFornecedor
+from persistencia.fornecedor_dao import FornecedorDAO
 import re
 
 
@@ -7,18 +8,18 @@ class ControladorFornecedor:
     def __init__(self, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
         self.__tela_fornecedor = TelaFornecedor()
-        self.__fornecedores = []
+        self.__fornecedor_dao = FornecedorDAO()
 
     @property
     def fornecedores(self):
-        return self.__fornecedores
+        return self.__fornecedor_dao.get_all()
 
     def listar_fornecedores(self):
-        if len(self.__fornecedores) == 0:
+        if self.__fornecedor_dao.get_size() == 0:
             self.__tela_fornecedor.mostra_mensagem("ATENCAO: Nenhum fornecedor cadastrado.")
         else:
             lista_fornecedores = []
-            for fornecedor in self.__fornecedores:
+            for fornecedor in self.__fornecedor_dao.get_all():
                 lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj])
 
             self.__tela_fornecedor.mostra_fornecedor(lista_fornecedores)
@@ -47,7 +48,7 @@ class ControladorFornecedor:
             self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: Fornecedor não cadastrado")
 
     def pega_fornecedor_por_cnpj(self, cnpj):
-        for fornecedor in self.__fornecedores:
+        for fornecedor in self.__fornecedor_dao.get_all():
             if fornecedor.cnpj == cnpj:
                 return fornecedor
         return None
@@ -68,7 +69,7 @@ class ControladorFornecedor:
 
         novo_fornecedor = Fornecedor(dados["nome"], dados["telefone"], dados["email"], cnpj)
         if self.pega_fornecedor_por_cnpj(novo_fornecedor.cnpj) is None:
-            self.__fornecedores.append(novo_fornecedor)
+            self.__fornecedor_dao.add(novo_fornecedor)
             self.__tela_fornecedor.mostra_mensagem("Fornecedor cadastrado com sucesso")
         else:
             self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: CNPJ duplicado")
@@ -78,7 +79,7 @@ class ControladorFornecedor:
         cnpj_fornecedor = self.__tela_fornecedor.seleciona_fornecedor()
         fornecedor = self.pega_fornecedor_por_cnpj(cnpj_fornecedor)
         if fornecedor is not None:
-            self.__fornecedores.remove(fornecedor)
+            self.__fornecedor_dao.remove(fornecedor)
             self.__tela_fornecedor.mostra_mensagem("Fornecedor removido com sucesso")
         else:
             self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: Fornecedor não cadastrado")
