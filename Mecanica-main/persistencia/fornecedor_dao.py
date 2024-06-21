@@ -5,7 +5,7 @@ from entidade.fornecedor import Fornecedor
 class FornecedorDAO(DAO):
 
     def __init__(self):
-        super().__init__('oleos.pkl')
+        super().__init__('fornecedores.pkl')
 
     def add(self, fornecedor: Fornecedor):
         if isinstance(fornecedor, Fornecedor):
