@@ -56,7 +56,6 @@ class TelaFornecedor():
     self.close()
     return {"nome": nome, "telefone": telefone, "email": email, "cnpj": cnpj}
 
-  # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
   def mostra_fornecedor(self, dados_fornecedor):
     sg.ChangeLookAndFeel('DarkTeal4')
     # Cabeçalhos da tabela
@@ -76,6 +75,11 @@ class TelaFornecedor():
       [sg.Button('Voltar')]
     ]
     self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
+    button, values = self.open()
+    cnpj = values['cnpj']
+    self.close()
+    return cnpj
 
   # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
   def seleciona_amigo(self):
