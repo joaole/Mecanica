@@ -33,7 +33,7 @@ class DAO(ABC):
             pass
 
     def get_all(self):
-        return self.__cache.values()
+        return list(self.__cache.values())
 
     def get_size(self):
         return len(list(self.__cache.values()))
