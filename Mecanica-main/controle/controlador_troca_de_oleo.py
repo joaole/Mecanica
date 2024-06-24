@@ -1,20 +1,21 @@
 from entidade.troca_de_oleo import TrocaDeOleo
 from limite.tela_troca_de_oleo import TelaTrocaDeOleo
+from persistencia.troca_de_oleo_entrada_dao import TrocaDeOleoEntradaDAO
+from persistencia.troca_de_oleo_saida_dao import TrocaDeOleoSaidaDAO
 
 
 class ControladorTrocaDeOleo:
     def __init__(self, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
         self.__tela_troca_de_oleo = TelaTrocaDeOleo()
-        self.__trocas = []
-        self.__trocas_efetuadas = []
-
-    def gerar_codigo(self):
-        codigo = str(len(self.__trocas) + 1)
+        self.__troca_de_oleo_entrada_dao = TrocaDeOleoEntradaDAO()
+        self.__troca_de_oleo_saida_dao = TrocaDeOleoSaidaDAO()
+    def gerar_codigo(self, lista):
+        codigo = str(lista.get_size + 1)
         return codigo
 
-    def pega_troca_por_codigo(self, codigo):
-        for troca in self.__trocas:
+    def pega_troca_por_codigo(self, lista, codigo):
+        for troca in lista.get_all:
             if troca.codigo == codigo:
                 return troca
         else:
@@ -29,23 +30,26 @@ class ControladorTrocaDeOleo:
         if cliente is not None:
             veiculo = self.__controlador_sistema.controlador_cliente.pega_moto_por_placa(cliente, dados_troca["placa_moto"])
             if veiculo is not None:
-                codigo = self.gerar_codigo()
-                nova_troca = TrocaDeOleo(veiculo, cliente, dados_troca["data_entrada"], codigo)
-                for troca in self.__trocas:
-                    if troca.cliente == nova_troca.cliente and troca.veiculo == nova_troca.veiculo and troca.data_entrada == nova_troca.data_entrada:
-                        self.__tela_troca_de_oleo.mostra_mensagem("ATENCAO: Ja possui uma troca com o mesmo cliente, veiculo e data de entrada")
+                for troca in self.__troca_de_oleo_entrada_dao.get_all():
+                    if (troca.cliente == cliente
+                            and troca.veiculo == veiculo
+                            and troca.data_entrada == dados_troca["data_entrada"]):
+                        (self.__tela_troca_de_oleo.mostra_mensagem
+                         ("ATENCAO: Ja possui uma troca com o mesmo cliente, veiculo e data de entrada"))
                 else:
-                    self.__trocas.append(nova_troca)
+                    codigo = self.gerar_codigo(self.__troca_de_oleo_entrada_dao)
+                    nova_troca = TrocaDeOleo(veiculo, cliente, dados_troca["data_entrada"], codigo)
+                    self.__troca_de_oleo_entrada_dao.add(nova_troca)
                     self.__tela_troca_de_oleo.mostra_mensagem("Troca cadastrada com sucesso")
             else:
                 self.__tela_troca_de_oleo.mostra_mensagem("ATENCAO: Veiculo nao cadastrado")
         else:
-            self.__tela_troca_de_oleo.mostra_mensagem("ATENCAO: Veiculo nao cadastrado")
+            self.__tela_troca_de_oleo.mostra_mensagem("ATENCAO: Cliente nao cadastrado")
 
     def finalizar_troca(self):
         self.listar_trocas()
         codigo = self.__tela_troca_de_oleo.seleciona_troca()
-        troca = self.pega_troca_por_codigo(codigo)
+        troca = self.pega_troca_por_codigo(self.__troca_de_oleo_entrada_dao, codigo)
         if troca is not None:
             self.__controlador_sistema.controlador_modelo.listar_oleos_do_modelo(troca.veiculo.modelo)
             dados_saida = self.__tela_troca_de_oleo.pega_dados_saida_veiculo()
@@ -65,20 +69,20 @@ class ControladorTrocaDeOleo:
         pass
 
     def finaliza_troca(self, codigo):
-        for troca in self.__trocas:
+        for troca in self.__troca_de_oleo_entrada_dao.get_all():
             if troca.codigo == codigo:
-                self.__trocas_efetuadas.append(troca)
-                self.__trocas.remove(troca)
+                self.__troca_de_oleo_saida_dao.add(troca)
+                self.__troca_de_oleo_entrada_dao.remove(troca)
         else:
             return None
 
     def cancelar_troca(self, codigo):
-        for troca in self.__trocas:
+        for troca in self.__troca_de_oleo_entrada_dao.get_all():
             if troca.codigo == codigo:
-                self.__trocas.remove(troca)
+                self.__troca_de_oleo_entrada_dao.remove(troca)
 
     def listar_trocas(self):
-        for troca in self.__trocas:
+        for troca in self.__troca_de_oleo_entrada_dao.get_all():
             self.__tela_troca_de_oleo.mostra_troca({
                 "nome": troca.cliente.nome,
                 "placa": troca.veiculo.placa_moto,
@@ -92,7 +96,7 @@ class ControladorTrocaDeOleo:
             })
 
     def listar_trocas_efetuadas(self):
-        for troca in self.__trocas_efetuadas:
+        for troca in self.__troca_de_oleo_saida_dao.get_all():
             self.__tela_troca_de_oleo.mostra_troca({
                 "nome": troca.cliente.nome,
                 "placa": troca.veiculo.placa_moto,
