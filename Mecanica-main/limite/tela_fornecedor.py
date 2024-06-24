@@ -71,7 +71,7 @@ class TelaFornecedor():
               [sg.Button('Incluir', key=1), sg.Button('Alterar', key=2)], sg.Button('Excluir', key=3), sg.Button('Voltar', key=0),
     ]
 
-    self.__window = sg.Window('Lista de Fornecedores').Layout(layout)
+    self.__window = sg.Window('Lista de Fornecedores', layout)
 
     button, values = self.open()
 
