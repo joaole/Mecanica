@@ -1,6 +1,7 @@
 from entidade.cliente import Cliente
 from entidade.veiculo import Veiculo
 from limite.tela_cliente import TelaCliente
+from persistencia.cliente_dao import CLienteDAO
 import re
 
 
@@ -8,10 +9,10 @@ class ControladorCliente:
     def __init__(self, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
         self.__tela_cliente = TelaCliente()
-        self.__clientes = []
+        self.__cliente_dao = CLienteDAO()
 
     def listar_clientes(self):
-        for cliente in self.__clientes:
+        for cliente in self.__cliente_dao.get_all():
             self.__tela_cliente.mostra_cliente({
                 "nome": cliente.nome,
                 "telefone": cliente.telefone,
@@ -20,7 +21,7 @@ class ControladorCliente:
             })
 
     def pega_cliente_por_cpf(self, cpf: int):
-        for cliente in self.__clientes:
+        for cliente in self.__cliente_dao.get_all():
             if cliente.cpf == cpf:
                 return cliente
         else:
@@ -51,7 +52,7 @@ class ControladorCliente:
 
         novo_cliente = Cliente(dados["nome"], telefone, email, cpf)
         if self.pega_cliente_por_cpf(novo_cliente.cpf) is None:
-            self.__clientes.append(novo_cliente)
+            self.__cliente_dao.add(novo_cliente)
             self.__tela_cliente.mostra_mensagem(f"{novo_cliente.nome} cadastrado com sucesso.")
         else:
             self.__tela_cliente.mostra_mensagem("ATENÇÃO: CPF duplicado")
@@ -84,7 +85,7 @@ class ControladorCliente:
         cpf_cliente = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf_cliente)
         if cliente is not None:
-            self.__clientes.remove(cliente)
+            self.__cliente_dao.remove(cliente)
         else:
             self.__tela_cliente.mostra_mensagem("ATENÇÃO: Cliente não existente")
 
