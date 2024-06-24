@@ -7,6 +7,12 @@ class TrocaDeOleoEntradaDAO(DAO):
     def __init__(self):
         super().__init__('trocas_entrada.pkl')
 
+    def load(self):
+        super().load()
+        if self.get_all():
+            print(self.get_all()[0].get_proximo_codigo())
+            TrocaDeOleo.set_proximo_codigo(self.get_all()[0].get_proximo_codigo())
+
     def add(self, troca_de_oleo: TrocaDeOleo):
         if isinstance(troca_de_oleo, TrocaDeOleo):
             super().add(troca_de_oleo.codigo, troca_de_oleo)
