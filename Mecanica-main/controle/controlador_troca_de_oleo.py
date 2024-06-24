@@ -10,9 +10,6 @@ class ControladorTrocaDeOleo:
         self.__tela_troca_de_oleo = TelaTrocaDeOleo()
         self.__troca_de_oleo_entrada_dao = TrocaDeOleoEntradaDAO()
         self.__troca_de_oleo_saida_dao = TrocaDeOleoSaidaDAO()
-    def gerar_codigo(self, lista):
-        codigo = str(lista.get_size + 1)
-        return codigo
 
     def pega_troca_por_codigo(self, lista, codigo):
         for troca in lista.get_all:
@@ -37,8 +34,7 @@ class ControladorTrocaDeOleo:
                         (self.__tela_troca_de_oleo.mostra_mensagem
                          ("ATENCAO: Ja possui uma troca com o mesmo cliente, veiculo e data de entrada"))
                 else:
-                    codigo = self.gerar_codigo(self.__troca_de_oleo_entrada_dao)
-                    nova_troca = TrocaDeOleo(veiculo, cliente, dados_troca["data_entrada"], codigo)
+                    nova_troca = TrocaDeOleo(veiculo, cliente, dados_troca["data_entrada"])
                     self.__troca_de_oleo_entrada_dao.add(nova_troca)
                     self.__tela_troca_de_oleo.mostra_mensagem("Troca cadastrada com sucesso")
             else:
