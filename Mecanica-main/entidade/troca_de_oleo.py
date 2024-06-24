@@ -1,20 +1,34 @@
-from entidade.modelo import Modelo
+from datetime import datetime
 from entidade.veiculo import Veiculo
 from entidade.cliente import Cliente
 from entidade.oleo import Oleo
 
 
 class TrocaDeOleo:
-    def __init__(self, veiculo, cliente, data_entrada, codigo):
+    __proximo_codigo = 0
+    def __init__(self, veiculo, cliente, data_entrada):
         if isinstance(veiculo, Veiculo):
             self.__veiculo = veiculo
         if isinstance(cliente, Cliente):
             self.__cliente = cliente
         self.__oleo = None
         self.__valor_final = None
-        self.__codigo = codigo
+        self.__codigo = self.gerar_codigo()
         self.__data_entrada = data_entrada
         self.__data_saida = None
+
+    @classmethod
+    def set_proximo_codigo(cls, proximo_codigo):
+        if proximo_codigo > TrocaDeOleo.__proximo_codigo:
+            TrocaDeOleo.__proximo_codigo = proximo_codigo
+
+    @classmethod
+    def get_proximo_codigo(cls):
+        return TrocaDeOleo.__proximo_codigo
+
+    def gerar_codigo(self):
+        TrocaDeOleo.__proximo_codigo += 1
+        self.__codigo = TrocaDeOleo.__proximo_codigo
 
     @property
     def veiculo(self):
