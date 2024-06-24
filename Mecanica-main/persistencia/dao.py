@@ -9,14 +9,14 @@ class DAO(ABC):
         self.__datasource = datasource
         self.__cache = {}
         try:
-            self.__load()
+            self.load()
         except FileNotFoundError:
             self.__dump()
 
     def __dump(self):
         pickle.dump(self.__cache, open(self.__datasource, 'wb'))
 
-    def __load(self):
+    def load(self):
         self.__cache = pickle.load(open(self.__datasource, 'rb'))
 
     def add(self, key, object):
