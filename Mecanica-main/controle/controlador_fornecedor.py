@@ -20,16 +20,15 @@ class ControladorFornecedor:
         else:
             lista_fornecedores = []
             for fornecedor in self.__fornecedor_dao.get_all():
-                lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj, fornecedor.telefone, fornecedor.email])
+                lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj])
 
             self.__tela_fornecedor.mostra_fornecedor(lista_fornecedores)
 
-    def altera_fornecedor(self):
+    def altera_fornecedor(self, cnpj):
         self.listar_fornecedores()
-        cnpj = self.__tela_fornecedor.seleciona_fornecedor()
         fornecedor = self.pega_fornecedor_por_cnpj(cnpj)
         if fornecedor is not None:
-            dados = self.__tela_fornecedor.pega_dados_fornecedor()
+            dados = self.__tela_fornecedor.pega_dados_fornecedor({'nome': fornecedor.nome})
             if not self.verifica_cnpj(dados["cnpj"]):
                 self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: CNPJ inválido")
                 return
@@ -53,7 +52,7 @@ class ControladorFornecedor:
                 return fornecedor
         return None
 
-    def inclui_fornecedor(self):
+    def inclui_fornecedor(self, cnpj):
         dados = self.__tela_fornecedor.pega_dados_fornecedor()
         cnpj = dados["cnpj"]
 
@@ -74,10 +73,10 @@ class ControladorFornecedor:
         else:
             self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: CNPJ duplicado")
 
-    def exclui_fornecedor(self):
+    def exclui_fornecedor(self,cnpj_fornecedor):
         self.listar_fornecedores()
-        cnpj_fornecedor = self.__tela_fornecedor.seleciona_fornecedor()
         fornecedor = self.pega_fornecedor_por_cnpj(cnpj_fornecedor)
+        self.__tela_fornecedor.pega_dados_fornecedor({'nome': fornecedor.nome})
         if fornecedor is not None:
             self.__fornecedor_dao.remove(fornecedor)
             self.__tela_fornecedor.mostra_mensagem("Fornecedor removido com sucesso")
@@ -120,9 +119,13 @@ class ControladorFornecedor:
 
         continua = True
         while continua:
-            opcao = self.__tela_fornecedor.tela_opcoes()
+            lista_fornecedores = []
+            for fornecedor in self.__fornecedor_dao.get_all():
+                lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj, fornecedor.telefone, fornecedor.email])
+            dados_tela = self.__tela_fornecedor.tela_opcoes(lista_fornecedores)
+            opcao = dados_tela['opcao']
             if opcao in lista_opcoes:
-                lista_opcoes[opcao]()
+                lista_opcoes[opcao](dados_tela['cnpj'])
             else:
                 self.__tela_fornecedor.mostra_mensagem("Opção inválida")
 
