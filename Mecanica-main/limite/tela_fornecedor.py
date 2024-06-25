@@ -5,20 +5,35 @@ class TelaFornecedor():
     self.__window = None
     self.init_opcoes()
 
-  # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
-  def tela_opcoes(self):
-    self.init_opcoes()
+
+  def tela_opcoes(self, dados_fornecedor = []):
+    sg.ChangeLookAndFeel('DarkTeal4')
+    # Cabeçalhos da tabela
+    header = ['Nome', 'Cnpj', 'Telefone', 'Email']
+    layout = [
+      [sg.Text('-------- LISTA DE FORNECEDORES ----------', font=("Helvetica", 25))],
+      [sg.Table(values=dados_fornecedor,
+                headings=header,
+                display_row_numbers=True,
+                auto_size_columns=True,
+                num_rows=min(15, len(dados_fornecedor)),
+                key='-TABLE-',
+                row_height=25)],
+      [
+        sg.Button('Incluir Fornecedor', key=1), sg.Button('Alterar Fornecedor', key=2),
+        sg.Button('Excluir Fornecedor', key=4)
+      ],
+      [sg.Button('Voltar')]
+    ]
+    self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
     button, values = self.open()
-    if values['1']:
-      opcao = 1
-    if values['3']:
-      opcao = 3
-    # cobre os casos de Retornar, fechar janela, ou clicar cancelar
-    #Isso faz com que retornemos a tela do sistema caso qualquer uma dessas coisas aconteca
-    if values['0'] or button in (None, 'Cancelar'):
-      opcao = 0
-    self.close()
-    return opcao
+    cnpj = None
+    if values['-TABLE-']:
+      cnpj = dados_fornecedor[values['-TABLE-'][0]][1]
+      self.close()
+
+    return {'opcao': button, 'cnpj': cnpj}
 
   def init_opcoes(self):
     #sg.theme_previewer()
@@ -35,11 +50,11 @@ class TelaFornecedor():
 
   # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
   # opção de tratamento: adicionar um if e só coletar nome e telefone se o button é 'Confirmar'
-  def pega_dados_fornecedor(self):
+  def pega_dados_fornecedor(self, dados_fornecedor = {'nome': ''}):
     sg.ChangeLookAndFeel('DarkTeal4')
     layout = [
       [sg.Text('-------- DADOS FORNECEDOR ----------', font=("Helvica", 25))],
-      [sg.Text('Nome:', size=(15, 1)), sg.InputText('', key='nome')],
+      [sg.Text('Nome:', size=(15, 1)), sg.InputText(dados_fornecedor['nome'], key='nome')],
       [sg.Text('Telefone:', size=(15, 1)), sg.InputText('', key='telefone')],
       [sg.Text('Email', size=(15, 1)), sg.InputText('', key='email')],
       [sg.Text('Cnpj:', size=(15, 1)), sg.InputText('', key='cnpj')],
@@ -59,7 +74,7 @@ class TelaFornecedor():
   def mostra_fornecedor(self, dados_fornecedor):
     sg.ChangeLookAndFeel('DarkTeal4')
     # Cabeçalhos da tabela
-    header = ['Nome', 'Telefone', 'Email', 'Cnpj']
+    header = ['Nome', 'Cnpj', 'Telefone', 'Email']
     layout = [
       [sg.Text('-------- LISTA DE FORNECEDORES ----------', font=("Helvetica", 25))],
       [sg.Table(values=dados_fornecedor,
@@ -77,26 +92,15 @@ class TelaFornecedor():
     self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
 
     button, values = self.open()
-    cnpj = values['cnpj']
-    self.close()
-    return cnpj
+    if values['-TABLE-']:
+      cnpj = dados_fornecedor[values['-TABLE-'][0]][1]
+      self.close()
+
+    return {'opcao': button, 'cnpj': cnpj}
 
   # fazer aqui tratamento dos dados, caso a entrada seja diferente do esperado
-  def seleciona_amigo(self):
-    sg.ChangeLookAndFeel('DarkTeal4')
-    layout = [
-      [sg.Text('-------- SELECIONAR AMIGO ----------', font=("Helvica", 25))],
-      [sg.Text('Digite o CPF do amigo que deseja selecionar:', font=("Helvica", 15))],
-      [sg.Text('CPF:', size=(15, 1)), sg.InputText('', key='cpf')],
-      [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
-    ]
-    self.__window = sg.Window('Seleciona amigo').Layout(layout)
-
-    button, values = self.open()
-    cpf = values['cpf']
-    self.close()
-    return cpf
-
+  def seleciona_fornecedor(self):
+    pass
   def mostra_mensagem(self, msg):
     sg.popup("", msg)
 
