@@ -20,7 +20,7 @@ class ControladorFornecedor:
         else:
             lista_fornecedores = []
             for fornecedor in self.__fornecedor_dao.get_all():
-                lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj])
+                lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj, fornecedor.telefone, fornecedor.email])
 
             self.__tela_fornecedor.mostra_fornecedor(lista_fornecedores)
 
