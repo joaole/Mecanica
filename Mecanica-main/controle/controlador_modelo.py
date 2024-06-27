@@ -47,7 +47,7 @@ class ControladorModelo:
 
     def lista_modelos(self):
         if self.__modelo_dao.get_size() == 0:
-            return self.__tela_modelo.mostra_mensagem("ATENCAO: Nenhum modelo cadastrado.")
+            return None
         for modelo in self.__modelo_dao.get_all():
             self.__tela_modelo.mostra_modelo({"nome": modelo.nome, "quantidade_oleo": modelo.quantidade_oleo, "expessura": modelo.expessura, "codigo": modelo.codigo})
 
