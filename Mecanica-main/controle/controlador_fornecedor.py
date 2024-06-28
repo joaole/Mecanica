@@ -25,10 +25,10 @@ class ControladorFornecedor:
             self.__tela_fornecedor.mostra_fornecedor(lista_fornecedores)
 
     def altera_fornecedor(self, cnpj):
-        self.listar_fornecedores()
         fornecedor = self.pega_fornecedor_por_cnpj(cnpj)
         if fornecedor is not None:
-            dados = self.__tela_fornecedor.pega_dados_fornecedor({'nome': fornecedor.nome})
+            dados = self.__tela_fornecedor.pega_dados_fornecedor({'nome': fornecedor.nome, 'telefone': fornecedor.telefone,
+                                                                  'email': fornecedor.email, 'cnpj': fornecedor.cnpj})
             if not self.verifica_cnpj(dados["cnpj"]):
                 self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: CNPJ inválido")
                 return
@@ -52,7 +52,7 @@ class ControladorFornecedor:
                 return fornecedor
         return None
 
-    def inclui_fornecedor(self, cnpj):
+    def inclui_fornecedor(self, cnpj=None):
         dados = self.__tela_fornecedor.pega_dados_fornecedor()
         cnpj = dados["cnpj"]
 
@@ -73,10 +73,8 @@ class ControladorFornecedor:
         else:
             self.__tela_fornecedor.mostra_mensagem("ATENÇÃO: CNPJ duplicado")
 
-    def exclui_fornecedor(self,cnpj_fornecedor):
-        self.listar_fornecedores()
-        fornecedor = self.pega_fornecedor_por_cnpj(cnpj_fornecedor)
-        self.__tela_fornecedor.pega_dados_fornecedor({'nome': fornecedor.nome})
+    def exclui_fornecedor(self, cnpj):
+        fornecedor = self.pega_fornecedor_por_cnpj(cnpj)
         if fornecedor is not None:
             self.__fornecedor_dao.remove(fornecedor)
             self.__tela_fornecedor.mostra_mensagem("Fornecedor removido com sucesso")
@@ -114,7 +112,6 @@ class ControladorFornecedor:
             2: self.altera_fornecedor,
             3: self.listar_fornecedores,
             4: self.exclui_fornecedor,
-            0: self.retornar
         }
 
         continua = True
@@ -126,8 +123,12 @@ class ControladorFornecedor:
             opcao = dados_tela['opcao']
             if opcao in lista_opcoes:
                 lista_opcoes[opcao](dados_tela['cnpj'])
+            elif opcao == 0:
+                self.retornar()
             else:
                 self.__tela_fornecedor.mostra_mensagem("Opção inválida")
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
+
+
