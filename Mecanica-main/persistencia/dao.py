@@ -29,6 +29,7 @@ class DAO(ABC):
     def remove(self, key):
         try:
             self.__cache.pop(key)
+            self.__dump()
         except KeyError:
             pass
 
