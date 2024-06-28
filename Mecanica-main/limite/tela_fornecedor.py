@@ -58,9 +58,8 @@ class TelaFornecedor():
         self.close()
         return {"nome": nome, "telefone": telefone, "email": email, "cnpj": cnpj}
 
-    def mostra_fornecedor(self, dados_fornecedor):
+    def tela_opcoes(self, dados_fornecedor=[]):
         sg.ChangeLookAndFeel('DarkTeal4')
-        # Cabeçalhos da tabela
         header = ['Nome', 'Cnpj', 'Telefone', 'Email']
         layout = [
             [sg.Text('-------- LISTA DE FORNECEDORES ----------', font=("Helvetica", 25))],
@@ -75,16 +74,32 @@ class TelaFornecedor():
                 sg.Button('Incluir Fornecedor', key=1), sg.Button('Alterar Fornecedor', key=2),
                 sg.Button('Excluir Fornecedor', key=4)
             ],
-            [sg.Button('Voltar')]
+            [sg.Button('Voltar', key=0)]
         ]
         self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
 
-        button, values = self.open()
-        if values['-TABLE-']:
-            cnpj = dados_fornecedor[values['-TABLE-'][0]][1]
-            self.close()
+        while True:
+            button, values = self.open()
 
-        return {'opcao': button, 'cnpj': cnpj}
+            if button in (None, 0):
+                self.close()
+                return {'opcao': button, 'cnpj': None}
+
+            if button == 1:
+                self.close()
+                return {'opcao': button, 'cnpj': None}
+
+            if button == 2:
+                if values['-TABLE-']:
+                    cnpj = dados_fornecedor[values['-TABLE-'][0]][1]
+                    self.close()
+                    return {'opcao': button, 'cnpj': cnpj}
+
+            if button == 4:
+                if values['-TABLE-']:
+                    cnpj = dados_fornecedor[values['-TABLE-'][0]][1]
+                    self.close()
+                    return {'opcao': button, 'cnpj': cnpj}
 
     def seleciona_fornecedor(self, dados_fornecedor):
         sg.ChangeLookAndFeel('DarkTeal4')
