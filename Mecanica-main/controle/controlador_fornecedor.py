@@ -22,7 +22,7 @@ class ControladorFornecedor:
             for fornecedor in self.__fornecedor_dao.get_all():
                 lista_fornecedores.append([fornecedor.nome, fornecedor.cnpj])
 
-            self.__tela_fornecedor.mostra_fornecedor(lista_fornecedores)
+            return self.__tela_fornecedor.mostrar_fornecedor(lista_fornecedores)
 
     def altera_fornecedor(self, cnpj):
         fornecedor = self.pega_fornecedor_por_cnpj(cnpj)
