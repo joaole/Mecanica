@@ -28,32 +28,36 @@ class ControladorOleo:
             return None
 
     def inclui_oleo(self):
-        self.__controlador_sistema.controlador_fornecedor.listar_fornecedores()
-        cnpj = self.__tela_oleo.seleciona_fornecedor()
+        cnpj = self.__controlador_sistema.controlador_fornecedor.listar_fornecedores()
+
         fornecedor = self.__controlador_sistema.controlador_fornecedor.pega_fornecedor_por_cnpj(cnpj)
         if fornecedor is not None:
             dados = self.__tela_oleo.pega_dados_oleo()
+
             for oleo in self.__oleo_dao.get_all():
-                if oleo.marca == dados["marca"] and oleo.expessura == dados["expessura"] and int(oleo.valor) <= int(dados["valor"]):
-                    self.__tela_oleo.mostra_mensagem("ATENÇÃO: Oleo de mesmo valor ou mais caro que um já cadastrado do mesmo modelo e expessura")
+                if oleo.marca == dados["marca"] and oleo.expessura == dados["expessura"] and int(oleo.valor) <= int(
+                        dados["valor"]):
+                    self.__tela_oleo.mostra_mensagem(
+                        "ATENÇÃO: Óleo de mesmo valor ou mais caro já cadastrado para o mesmo modelo e espessura")
                     break
-                elif oleo.marca == dados["marca"] and oleo.expessura == dados["expessura"] and int(oleo.valor) > int(dados["valor"]):
+                elif oleo.marca == dados["marca"] and oleo.expessura == dados["expessura"] and int(oleo.valor) > int(
+                        dados["valor"]):
                     codigo = oleo.codigo
                     novo_oleo = Oleo(fornecedor, dados["marca"], dados["expessura"], dados["valor"], codigo)
                     self.__oleo_dao.add(novo_oleo)
                     self.__controlador_sistema.controlador_modelo.adicionar_oleo(novo_oleo)
                     self.__controlador_sistema.controlador_modelo.remover_oleo(oleo)
                     self.__oleo_dao.remove(oleo)
-                    self.__tela_oleo.mostra_mensagem("Oleo cadastrado com sucesso")
+                    self.__tela_oleo.mostra_mensagem("Óleo cadastrado com sucesso")
                     break
             else:
                 codigo = self.gerar_codigo()
                 novo_oleo = Oleo(fornecedor, dados["marca"], dados["expessura"], dados["valor"], codigo)
                 self.__oleo_dao.add(novo_oleo)
                 self.__controlador_sistema.controlador_modelo.adicionar_oleo(novo_oleo)
-                self.__tela_oleo.mostra_mensagem("Oleo cadastrado com sucesso")
+                self.__tela_oleo.mostra_mensagem("Óleo cadastrado com sucesso")
         else:
-            self.__tela_oleo.mostra_mensagem("ATENCAO: Fornecedor nao cadastrado")
+            self.__tela_oleo.mostra_mensagem("ATENÇÃO: Fornecedor não cadastrado")
 
     def exclui_oleo(self):
         codigo = self.__tela_oleo.seleciona_oleo()
@@ -98,9 +102,17 @@ class ControladorOleo:
         lista_opcoes = {1: self.inclui_oleo, 2: self.altera_oleo, 3: self.lista_oleo_por_expessura,
                         4: self.exclui_oleo, 5: self.lista_oleo, 0: self.retornar}
 
-        continua = True
-        while continua:
-            lista_opcoes[self.__tela_oleo.tela_opcoes()]()
+        lista_oleo= []
+        for oleo in self.__oleo_dao.get_all():
+            lista_oleo.append([oleo.fornecedor.nome, oleo.marca, oleo.expessura, oleo.valor, oleo.codigo])
+        dados_tela = self.__tela_oleo.tela_opcoes(lista_oleo)
+        opcao = dados_tela['opcao']
+        if opcao in lista_opcoes:
+            lista_opcoes[opcao](dados_tela['codigo'])
+        elif opcao == 0:
+            self.retornar()
+        else:
+            self.__tela_oleo.mostra_mensagem('Opcção Invalida')
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
