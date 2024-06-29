@@ -1,21 +1,79 @@
-
+import PySimpleGUI as sg
 
 class TelaOleo:
-    def tela_opcoes(self):
-        print("-------- OLEOS ----------")
-        print("Escolha a opcao")
-        print("1 - Incluir Oleo")
-        print("2 - Alterar Oleo")
-        print("3 - Listar Oleos de Uma Expessura")
-        print("4 - Excluir Oleo")
-        print("5 - Listar Oleos")
-        print("0 - Retornar")
+    def __init__(self):
+        self.__window = None
+        self.init_opcoes()
 
-        opcao = int(input("Escolha a opcao: "))
-        return opcao
+    def init_opcoes(self):
+        pass
 
-    def seleciona_fornecedor(self):
-        cnpj = input("CNPJ do fornecedor que deseja adicionar Oleo: ")
+    def tela_opcoes(self, dados_oleo=[]):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        # Cabeçalhos da tabela
+        header = ['fornecedor', 'marcar', 'expessura', 'valor', 'codigo']
+        layout = [
+            [sg.Text('-------- LISTA DE OLEOS----------', font=("Helvetica", 25))],
+            [sg.Table(values=dados_oleo,
+                      headings=header,
+                      display_row_numbers=True,
+                      auto_size_columns=True,
+                      num_rows=min(15, len(dados_oleo)),
+                      key='-TABLE-',
+                      row_height=25)],
+            [
+                sg.Button('Incluir Oleo', key=1), sg.Button('Alterar Oleo', key=2),
+                sg.Button('Excluir Oleo', key=4)
+            ],
+            [sg.Button('Voltar', key=0)]
+        ]
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
+        while True:
+            button, values = self.open()
+
+            if button in (None, 0):
+                self.close()
+                return {'opcao': button, 'codigo': None}
+
+            if button == 1:
+                self.close()
+                return {'opcao': button, 'codigo': None}
+
+            if button == 2:
+                if values['-TABLE-']:
+                    codigo = dados_oleo[values['-TABLE-'][0]][4]
+                    self.close()
+                    return {'opcao': button, 'codigo': codigo}
+
+            if button == 4:
+                if values['-TABLE-']:
+                    codigo = dados_oleo[values['-TABLE-'][0]][4]
+                    self.close()
+                    return {'opcao': button, 'codigo': codigo}
+
+    def seleciona_fornecedor(self, dados_fornecedor ):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        header = ['Nome', 'Cnpj', 'Telefone', 'Email']
+        layout = [
+            [sg.Text('-------- SELECIONAR FORNECEDOR ----------', font=("Helvetica", 25))],
+            [sg.Table(values=dados_fornecedor,
+                      headings=header,
+                      display_row_numbers=True,
+                      auto_size_columns=True,
+                      num_rows=min(15, len(dados_fornecedor)),
+                      key='-TABLE-',
+                      row_height=25)],
+            [sg.Button('Confirmar'), sg.Button('Cancelar')]
+        ]
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
+        button, values = self.open()
+        cnpj = None
+        if values['-TABLE-']:
+            cnpj = dados_fornecedor[values['-TABLE-'][0]][1]
+        self.close()
+
         return cnpj
 
     def seleciona_oleo(self):
@@ -26,23 +84,56 @@ class TelaOleo:
         expessura = input("Expessura do oleo que deseja selecionar: ")
         return expessura
 
-    def pega_dados_oleo(self):
-        print("-------- DADOS OLEO ----------")
-        marca = input("Marca: ")
-        expessura = input("Expessura: ")
-        valor = input("Valor: ")
+    '''
+    def mostrar_oleo(self, dados_oleo):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        header = ['Fornecedor', 'Marca', 'Expessura', 'valor', 'Codigo']
+        layout = [
+            [sg.Text('-------- SELECIONAR OLEO ----------', font=("Helvetica", 25))],
+            [sg.Table(values=dados_oleo,
+                      headings=header,
+                      display_row_numbers=True,
+                      auto_size_columns=True,
+                      num_rows=min(15, len(dados_oleo)),
+                      key='-TABLE-',
+                      row_height=25)],
+            [sg.Button('Confirmar'), sg.Button('Cancelar')]
+        ]
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
 
+        button, values = self.open()
+        codigo = None
+        if values['-TABLE-']:
+            cnpj = dados_oleo[values['-TABLE-'][0]][1]
+        self.close()
+
+        return codigo
+    '''
+    def pega_dados_oleo(self, dados_fornecedor={'marca': '', 'expessura': '', 'valor': ''}):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('-------- DADOS FORNECEDOR ----------', font=("Helvica", 25))],
+            [sg.Text('Marca:', size=(15, 1)), sg.InputText(dados_fornecedor['marca'], key='marca')],
+            [sg.Text('Expessura:', size=(15, 1)), sg.InputText(dados_fornecedor['expessura'], key='expessura')],
+            [sg.Text('Valor:', size=(15, 1)), sg.InputText(dados_fornecedor['valor'], key='valor')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
+        button, values = self.open()
+        marca = values['marca']
+        expessura = values['expessura']
+        valor = values['valor']
+
+        self.close()
         return {"marca": marca, "expessura": expessura, "valor": valor}
 
-    def mostra_oleo(self, dados_oleo):
-        if isinstance(dados_oleo, dict):
-            print("CNPJ DO FORNECEDOR: ", dados_oleo["fornecedor"])
-            print("MARCA DO OLEO: ", dados_oleo["marca"])
-            print("EXPESSURA DO OLEO: ", dados_oleo["expessura"])
-            print("VALOR DO OLEO: ", dados_oleo["valor"])
-            print("CODIGO DO OLEO ", dados_oleo["codigo"])
-            print("\n")
-        else:
-            print("Erro: dados_oleo não é um dicionario")
     def mostra_mensagem(self, msg):
-        print(msg)
+        sg.popup("", msg)
+
+    def close(self):
+        self.__window.Close()
+
+    def open(self):
+        button, values = self.__window.Read()
+        return button, values
