@@ -125,6 +125,30 @@ class TelaFornecedor():
 
         return cnpj
 
+    def mostrar_fornecedor(self, dados_fornecedor):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        header = ['Nome', 'Cnpj', 'Telefone', 'Email']
+        layout = [
+            [sg.Text('-------- SELECIONAR FORNECEDOR ----------', font=("Helvetica", 25))],
+            [sg.Table(values=dados_fornecedor,
+                      headings=header,
+                      display_row_numbers=True,
+                      auto_size_columns=True,
+                      num_rows=min(15, len(dados_fornecedor)),
+                      key='-TABLE-',
+                      row_height=25)],
+            [sg.Button('Confirmar'), sg.Button('Cancelar')]
+        ]
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
+        button, values = self.open()
+        cnpj = None
+        if values['-TABLE-']:
+            cnpj = dados_fornecedor[values['-TABLE-'][0]][1]
+        self.close()
+
+        return cnpj
+
     def mostra_mensagem(self, msg):
         sg.popup("", msg)
 
