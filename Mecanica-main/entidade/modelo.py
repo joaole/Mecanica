@@ -1,8 +1,6 @@
-
-
 class Modelo:
     def __init__(self, nome, expessura, quantidade_oleo, codigo):
-        self.__nome = nome
+        self.__nome = str(nome)
         self.__expessura = expessura
         self.__quantidade_oleo = quantidade_oleo
         self.__oleos = []
@@ -14,7 +12,7 @@ class Modelo:
 
     @nome.setter
     def nome(self, nome):
-        self.__nome = nome
+        self.__nome = str(nome)  # Garantir que nome será sempre uma string
 
     @property
     def expessura(self):
