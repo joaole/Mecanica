@@ -10,7 +10,7 @@ class TelaModelo:
 
     def tela_opcoes(self, dados_modelo=[]):
         sg.ChangeLookAndFeel('DarkTeal4')
-        # Cabeçalhos da tabela
+        # Ensure the header matches the data structure
         header = ['nome', 'expessura', 'quantidade_oleo', 'codigo']
         layout = [
             [sg.Text('-------- LISTA DE MODELOS ----------', font=("Helvetica", 25))],
@@ -42,23 +42,23 @@ class TelaModelo:
 
             if button == 2:
                 if values['-TABLE-']:
-                    codigo = dados_modelo[values['-TABLE-'][0]][4]
+                    codigo = dados_modelo[values['-TABLE-'][0]][3]
                     self.close()
                     return {'opcao': button, 'codigo': codigo}
 
             if button == 4:
                 if values['-TABLE-']:
-                    codigo = dados_modelo[values['-TABLE-'][0]][4]
+                    codigo = dados_modelo[values['-TABLE-'][0]][3]
                     self.close()
                     return {'opcao': button, 'codigo': codigo}
 
-    def pega_dados_oleo(self, dados_fornecedor={'nome': '', 'quantidade_oleo': '', 'valor': ''}):
+    def pega_dados_modelo(self, dados_modelo={'nome': '', 'quantidade_oleo': '', 'expessura': ''}):
         sg.ChangeLookAndFeel('DarkTeal4')
         layout = [
-            [sg.Text('-------- DADOS MODELO ----------', font=("Helvica", 25))],
-            [sg.Text('Nome:', size=(15, 1)), sg.InputText(dados_fornecedor['nome'], key='nome')],
-            [sg.Text('Quantidade de Oleo:', size=(15, 1)), sg.InputText(dados_fornecedor['quantidade_oleo'], key='quantidade_oleo')],
-            [sg.Text('Expessura:', size=(15, 1)), sg.InputText(dados_fornecedor['expessura'], key='expessura')],
+            [sg.Text('-------- DADOS MODELO ----------', font=("Helvetica", 25))],
+            [sg.Text('Nome:', size=(15, 1)), sg.InputText(dados_modelo['nome'], key='nome')],
+            [sg.Text('Quantidade de Oleo:', size=(15, 1)), sg.InputText(dados_modelo['quantidade_oleo'], key='quantidade_oleo')],
+            [sg.Text('Expessura:', size=(15, 1)), sg.InputText(dados_modelo['expessura'], key='expessura')],
             [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
         self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
@@ -70,7 +70,6 @@ class TelaModelo:
 
         self.close()
         return {"nome": nome, "Quantidade de oleo": quantidade_oleo, "expessura": expessura}
-
 
     def mostrar_modelo(self, dados_modelo):
         sg.ChangeLookAndFeel('DarkTeal4')
@@ -91,11 +90,10 @@ class TelaModelo:
         button, values = self.open()
         codigo = None
         if values['-TABLE-']:
-            codigo = dados_modelo[values['-TABLE-'][0]][4]
+            codigo = dados_modelo[values['-TABLE-'][0]][3]
         self.close()
 
         return codigo
-
 
     def mostra_oleo_modelo(self, dados_oleo):
         print("CNPJ DO FORNECEDOR: ", dados_oleo["fornecedor"])
@@ -103,7 +101,6 @@ class TelaModelo:
         print("CODIGO DO OLEO: ", dados_oleo["codigo"])
         print("VALOR DO OLEO: ", dados_oleo["valor"])
         print("\n")
-
 
     def seleciona_modelo(self):
         codigo = input("CODIGO do modelo que deseja selecionar: ")
