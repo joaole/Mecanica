@@ -84,7 +84,7 @@ class TelaOleo:
         expessura = input("Expessura do oleo que deseja selecionar: ")
         return expessura
 
-    '''
+
     def mostrar_oleo(self, dados_oleo):
         sg.ChangeLookAndFeel('DarkTeal4')
         header = ['Fornecedor', 'Marca', 'Expessura', 'valor', 'Codigo']
@@ -104,11 +104,11 @@ class TelaOleo:
         button, values = self.open()
         codigo = None
         if values['-TABLE-']:
-            cnpj = dados_oleo[values['-TABLE-'][0]][1]
+            codigo = dados_oleo[values['-TABLE-'][0]][4]
         self.close()
 
         return codigo
-    '''
+
     def pega_dados_oleo(self, dados_fornecedor={'marca': '', 'expessura': '', 'valor': ''}):
         sg.ChangeLookAndFeel('DarkTeal4')
         layout = [
