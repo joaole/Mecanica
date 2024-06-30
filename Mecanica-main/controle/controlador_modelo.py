@@ -2,6 +2,7 @@ from limite.tela_modelo import TelaModelo
 from entidade.modelo import Modelo
 from persistencia.modelo_dao import ModeloDAO
 
+
 class ControladorModelo:
     def __init__(self, controlador_sistema):
         self.__modelo_dao = ModeloDAO()
@@ -9,7 +10,7 @@ class ControladorModelo:
         self.__controlador_sistema = controlador_sistema
 
     def gerar_codigo(self):
-        codigo = str(self.__modelo_dao.get_size() + 1)
+        codigo = self.__modelo_dao.get_size() + 1
         return codigo
 
     def pega_modelo_por_codigo(self, codigo: int):
@@ -18,7 +19,7 @@ class ControladorModelo:
                 return modelo
         return None
 
-    def incluir_modelo(self):
+    def incluir_modelo(self, codigo=None):
         dados_modelo = self.__tela_modelo.pega_dados_modelo()
 
         for m in self.__modelo_dao.get_all():
@@ -33,41 +34,46 @@ class ControladorModelo:
             self.__modelo_dao.add(novo_modelo)
             self.__tela_modelo.mostra_mensagem("Modelo cadastrado com sucesso")
 
-    def alterar_modelo(self, modelo_codigo=None):
-        self.lista_modelos()
-        modelo_codigo = self.__tela_modelo.seleciona_modelo()
-        modelo = self.pega_modelo_por_codigo(modelo_codigo)
-        novos_dados_modelo = self.__tela_modelo.pega_dados_modelo({'nome': modelo.nome,
-                                                                   'quantidade_oleo': modelo.quantidade_oleo,
-                                                                   'expessura': modelo.expessura})
-
+    def alterar_modelo(self, codigo=None):
+        if codigo is None:
+            modelos = [[m.nome, m.quantidade_oleo, m.expessura, m.codigo] for m in self.__modelo_dao.get_all()]
+            codigo = self.__tela_modelo.seleciona_modelo(modelos)
+        if codigo is None:
+            return
+        codigo = int(codigo)
+        modelo = self.pega_modelo_por_codigo(codigo)
         if modelo is not None:
-            modelo.nome = novos_dados_modelo["nome"]
-            modelo.quantidade_oleo = novos_dados_modelo["Quantidade de oleo"]
-            modelo.expessura = novos_dados_modelo["expessura"]
-            self.lista_modelos()
+            dados = self.__tela_modelo.pega_dados_modelo(
+                {'nome': modelo.nome, 'quantidade_oleo': modelo.quantidade_oleo,
+                 'expessura': modelo.expessura, 'codigo': modelo.codigo})
+            modelo.nome = dados["nome"]
+            modelo.quantidade_oleo = dados["Quantidade de oleo"]
+            modelo.expessura = dados["expessura"]
+            self.__tela_modelo.mostra_mensagem("Modelo alterado com sucesso")
         else:
-            self.__tela_modelo.mostra_mensagem("ATENCAO: Amigo não existente")
+            self.__tela_modelo.mostra_mensagem("ATENCAO: Modelo não encontrado")
 
     def lista_modelos(self):
         if self.__modelo_dao.get_size() == 0:
+            self.__tela_modelo.mostra_mensagem("Nenhum modelo cadastrado")
             return None
         else:
-            for modelo in self.__modelo_dao.get_all():
-                self.__tela_modelo.mostrar_modelo({"nome": modelo.nome, "quantidade_oleo": modelo.quantidade_oleo, "expessura": modelo.expessura, "codigo": modelo.codigo})
-                return True
+            modelos = [[m.nome, m.quantidade_oleo, m.expessura, m.codigo] for m in self.__modelo_dao.get_all()]
+            self.__tela_modelo.mostrar_modelo(modelos)
 
-    def excluir_modelo(self):
-        self.lista_modelos()
-        codigo_modelo = self.__tela_modelo.seleciona_modelo()
-        modelo = self.pega_modelo_por_codigo(codigo_modelo)
-
+    def excluir_modelo(self, codigo=None):
+        if codigo is None:
+            modelos = [[m.nome, m.quantidade_oleo, m.expessura, m.codigo] for m in self.__modelo_dao.get_all()]
+            codigo = self.__tela_modelo.seleciona_modelo(modelos)
+        if codigo is None:
+            return
+        codigo = int(codigo)
+        modelo = self.pega_modelo_por_codigo(codigo)
         if modelo is not None:
-          self.__modelo_dao.remove(modelo)
-          self.lista_modelos()
-          self.__tela_modelo.mostra_mensagem("Modelo removido com sucesso.")
+            self.__modelo_dao.remove(modelo)
+            self.__tela_modelo.mostra_mensagem("Modelo removido com sucesso")
         else:
-          self.__tela_modelo.mostra_mensagem("ATENCAO: Modelo não existente")
+            self.__tela_modelo.mostra_mensagem("ATENCAO: Modelo nao encontrado")
 
     def adicionar_oleo(self, oleo):
         for modelo in self.__modelo_dao.get_all():
@@ -85,16 +91,22 @@ class ControladorModelo:
                     return "Oleo nao encontrado"
         else:
             return "Modelo nao encontrado"
+
     def listar_oleos(self):
         self.lista_modelos()
-        codigo = self.__tela_modelo.seleciona_modelo()
+        modelos = [[m.nome, m.quantidade_oleo, m.expessura, m.codigo] for m in self.__modelo_dao.get_all()]
+        codigo = self.__tela_modelo.seleciona_modelo(modelos)
+        if codigo is None:
+            return
+        codigo = int(codigo)
         modelo = self.pega_modelo_por_codigo(codigo)
         if modelo is not None:
             self.listar_oleos_do_modelo(modelo)
 
     def listar_oleos_do_modelo(self, modelo):
         for oleo in modelo.oleos:
-            self.__tela_modelo.mostra_oleo_modelo({"fornecedor": oleo.fornecedor.cnpj, "marca": oleo.marca, "valor": oleo.valor, "codigo": oleo.codigo})
+            self.__tela_modelo.mostra_oleo_modelo({"fornecedor": oleo.fornecedor.cnpj, "marca": oleo.marca,
+                                                   "valor": oleo.valor, "codigo": oleo.codigo})
 
     def abre_tela(self):
         lista_opcoes = {
@@ -112,7 +124,10 @@ class ControladorModelo:
         dados_tela = self.__tela_modelo.tela_opcoes(lista_modelo)
         opcao = dados_tela['opcao']
         if opcao in lista_opcoes:
-            lista_opcoes[opcao]()
+            if opcao == 0:
+                lista_opcoes[opcao]()
+            else:
+                lista_opcoes[opcao](dados_tela.get('codigo'))
         else:
             self.__tela_modelo.mostra_mensagem('Opção Inválida')
 
