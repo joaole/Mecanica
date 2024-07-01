@@ -41,3 +41,4 @@ class DAO(ABC):
 
     def atualiza(self):
         self.__dump()
+    
