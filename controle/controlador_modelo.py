@@ -109,9 +109,10 @@ class ControladorModelo:
             self.listar_oleos_do_modelo(modelo)
 
     def listar_oleos_do_modelo(self, modelo):
+        lista_oleos = []
         for oleo in modelo.oleos:
-            self.__tela_modelo.mostra_oleo_modelo({"fornecedor": oleo.fornecedor.cnpj, "marca": oleo.marca,
-                                                   "valor": oleo.valor, "codigo": oleo.codigo})
+            lista_oleos.append([oleo.fornecedor.nome, oleo.marca, oleo.expessura, oleo.valor, oleo.codigo])
+        return self.__controlador_sistema.controlador_oleo.listar_oleos(lista_oleos)
 
     def abre_tela(self):
         lista_opcoes = {
