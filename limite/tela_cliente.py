@@ -1,22 +1,55 @@
+import PySimpleGUI as sg
+
 class TelaCliente:
+    def __init__(self):
+        self.__window = None
+        self.init_opcoes()
 
-    def tela_opcoes(self):
-        print("-------- CLIENTE ----------")
-        print("Escolha a opcao")
-        print("1 - Incluir Cliente")
-        print("2 - Alterar Cliente")
-        print("3 - Listar Cliente")
-        print("4 - Excluir Cliente")
-        print("-------- VEÍCULOS --------")
-        print("Escolha a opcao")
-        print("5 - Incluir Veiculo")
-        print("6 - Alterar Veículo")
-        print("7 - Excluir Veiculo")
-        print("8 - Listar Veículos")
-        print("0 - Retornar")
+    def init_opcoes(self):
+        pass
 
-        opcao = int(input("Escolha a opcao: "))
-        return opcao
+    def tela_opcoes(self, dados_cliente=[], dados_veiculo=[]):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        # Cabeçalhos da tabela
+        header = ['Nome', 'Cpf', 'Telefone', 'Email']
+        cabecalho = ['Modelo', 'Placa', 'KM']
+        layout = [
+            [sg.Text('-------- LISTA DE CLIENTE ----------', font=("Helvetica", 25))],
+            [sg.Table(values=dados_cliente,
+                      headings=header,
+                      display_row_numbers=True,
+                      auto_size_columns=True,
+                      num_rows=min(15, len(dados_cliente)),
+                      key='-TABLE-',
+                      row_height=25)],
+            [
+                sg.Button('Incluir Cliente', key=1), sg.Button('Alterar Cliente', key=2),
+                sg.Button('Excluir Cliente', key=4),
+            ],
+
+            [sg.Text('-------- LISTA DE VEICULO ----------', font=("Helvetica", 25))],
+            [sg.Table(values=dados_veiculo,
+                      headings=cabecalho,
+                      display_row_numbers=True,
+                      auto_size_columns=True,
+                      num_rows=min(15, len(dados_veiculo)),
+                      key='-TABLE-',
+                      row_height=25)],
+            [sg.Button('Incluir Veiculo', key=5),
+             sg.Button('Alterar Veiculo', key=6), sg.Button('Excluir Veiculo', key=7)],  # This line was missing a comma
+            [sg.Button('Voltar', key=0)]
+        ]
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
+        button, values = self.open()
+        cpf = None
+        placa = None
+        if values['-TABLE-']:
+            cpf = dados_cliente[values['-TABLE-'][0]][1]
+            placa = dados_cliente[values['-TABLE-'][0][5]]
+            self.close()
+
+        return {'opcao': button, 'cpf': cpf, 'placa': placa}
 
     def seleciona_cliente(self):
         cpf = input("CPF do cliente que deseja selecionar: ")
@@ -33,19 +66,58 @@ class TelaCliente:
 
         return {"placa": placa_moto, "kilometragem": km_moto}
 
-    def pega_dados_cliente(self):
-        print("-------- DADOS CLIENTE ----------")
-        nome_cliente = input("Nome: ")
-        telefone_cliente = input("Telefone: ")
-        email_cliente = input("Email: ")
-        cpf_cliente = input("CPF: ")
-        return {"nome": nome_cliente, "telefone": telefone_cliente, "email": email_cliente, "cpf": cpf_cliente}
-    def mostra_cliente(self, dados_cliente):
-        print("NOME DO CLIENTE: ", dados_cliente["nome"])
-        print("CPF DO CLIENTE: ", dados_cliente["cpf"])
-        print("TELEFONE DO CLIENTE", dados_cliente["telefone"])
-        print("EMAIL DO CLIENTE", dados_cliente["email"])
-        print("\n")
+    def pega_dados_cliente(self, dados_cliente={'nome': '', 'cpf': '', 'email': '', 'telefone': ''}):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('-------- DADOS CLIENTE ----------', font=("Helvica", 25))],
+            [sg.Text('Nome:', size=(15, 1)), sg.InputText(dados_cliente['nome'], key='nome')],
+            [sg.Text('Telefone:', size=(15, 1)), sg.InputText(dados_cliente['telefone'], key='telefone')],
+            [sg.Text('Email', size=(15, 1)), sg.InputText(dados_cliente['email'], key='email')],
+            [sg.Text('Cpf:', size=(15, 1)), sg.InputText(dados_cliente['cpf'], key='cpf')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
+        button, values = self.open()
+        nome = values['nome']
+        telefone = values['telefone']
+        email = values['email']
+        cpf = values['cpf']
+
+        self.close()
+        return {"nome": nome, "telefone": telefone, "email": email, "cpf": cpf}
+
+    def mostrar_cliente(self, dados_cliente):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        # Cabeçalhos da tabela
+        header = ['Nome', 'Cpf', 'Telefone', 'Email']
+        layout = [
+            [sg.Text('-------- LISTA DE CLIENTE ----------', font=("Helvetica", 25))],
+            [sg.Table(values=dados_cliente,
+                      headings=header,
+                      display_row_numbers=True,
+                      auto_size_columns=True,
+                      num_rows=min(15, len(dados_cliente)),
+                      key='-TABLE-',
+                      row_height=25)],
+            [
+                sg.Button('Incluir Cliente', key=1), sg.Button('Alterar Cliente', key=2),
+                sg.Button('Excluir Cliente', key=4), sg.Button('Incluir Veiculo', key=5),
+                sg.Button('Alterar Veiculo', key=6), sg.Button('Excluir Veiculo', key=7)
+            ],
+            [sg.Button('Voltar', key=0)]
+        ]
+        self.__window = sg.Window('SisTroca de Oleo').Layout(layout)
+
+        button, values = self.open()
+        cpf = None
+        placa = None
+        if values['-TABLE-']:
+            cpf = dados_cliente[values['-TABLE-'][0]][1]
+            placa = dados_cliente[values['-TABLE-'][0][5]]
+            self.close()
+
+        return {'opcao': button, 'cpf': cpf, 'placa': placa}
 
     def mostra_veiculo(self, dados_veiculo):
         print("MODELO DO VEICULO: ", dados_veiculo["modelo"])
@@ -58,4 +130,11 @@ class TelaCliente:
         return placa_moto
 
     def mostra_mensagem(self, msg):
-        print(msg)
+        sg.popup("", msg)
+
+    def close(self):
+        self.__window.Close()
+
+    def open(self):
+        button, values = self.__window.Read()
+        return button, values
