@@ -14,3 +14,4 @@ class FornecedorDAO(DAO):
     def remove(self, fornecedor: Fornecedor):
         if isinstance(fornecedor, Fornecedor):
             super().remove(fornecedor.cnpj)
+        
