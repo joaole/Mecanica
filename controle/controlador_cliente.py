@@ -36,7 +36,7 @@ class ControladorCliente:
         else:
             return None
 
-    def inclui_cliente(self):
+    def inclui_cliente(self, cpf=None, placa=None):
         dados = self.__tela_cliente.pega_dados_cliente()
         cpf = dados["cpf"]
         telefone = dados["telefone"]
@@ -206,13 +206,19 @@ class ControladorCliente:
             0: self.retornar
         }
 
-        continua = True
-        while continua:
-            opcao = self.__tela_cliente.tela_opcoes()
-            if opcao in lista_opcoes:
+        lista_cliente = []
+        for cliente in self.__cliente_dao.get_all():
+            lista_cliente.append([cliente.nome, cliente.cpf, cliente.telefone,
+                                  cliente.email, cliente.veiculos])
+        dados_tela = self.__tela_cliente.tela_opcoes(lista_cliente)
+        opcao = dados_tela['opcao']
+        if opcao in lista_opcoes:
+            if opcao == 0:
                 lista_opcoes[opcao]()
             else:
-                self.__tela_cliente.mostra_mensagem("Opção inválida")
+                lista_opcoes[opcao](dados_tela.get('cpf', 'placa'))
+        else:
+            self.__tela_cliente.mostra_mensagem('Opção Inválida')
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
