@@ -119,5 +119,8 @@ class ControladorOleo:
         else:
             self.__tela_oleo.mostra_mensagem('Opção Inválida')
 
+    def listar_oleos(self, lista_oleos):
+        return self.__tela_oleo.mostrar_oleo(lista_oleos)
+
     def retornar(self):
         self.__controlador_sistema.abre_tela()
