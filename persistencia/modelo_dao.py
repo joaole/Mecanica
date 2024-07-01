@@ -17,3 +17,4 @@ class ModeloDAO(DAO):
 
     def atualiza(self):
         super().atualiza()
+        
