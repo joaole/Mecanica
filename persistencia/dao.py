@@ -28,7 +28,7 @@ class DAO(ABC):
 
     def remove(self, key):
         try:
-            self.__cache.pop(key)
+            del self.__cache[key]
             self.__dump()
         except KeyError:
             pass
@@ -37,4 +37,7 @@ class DAO(ABC):
         return list(self.__cache.values())
 
     def get_size(self):
-        return len(list(self.__cache.values()))
+        return int(len(list(self.__cache.values())))
+
+    def atualiza(self):
+        self.__dump()
