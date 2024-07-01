@@ -15,3 +15,6 @@ class OleoDAO(DAO):
     def remove(self, oleo: Oleo):
         if isinstance(oleo, Oleo):
             super().remove(oleo.codigo)
+
+    def atualiza(self):
+        super().atualiza()
