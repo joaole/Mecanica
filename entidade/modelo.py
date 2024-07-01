@@ -49,9 +49,9 @@ class Modelo:
         else:
             self.__oleos.append(oleo)
 
-    def exclui_oleo(self, oleo):
-        for ol in self.__oleos:
-            if ol.codigo == oleo.codigo:
-                self.__oleos.remove(oleo)
+    def excluir_oleo(self, oleo):
+        if oleo in self.__oleos:
+            self.__oleos.remove(oleo)
+            return True
         else:
             return None
