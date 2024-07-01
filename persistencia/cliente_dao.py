@@ -14,3 +14,7 @@ class CLienteDAO(DAO):
     def remove(self, cliente: Cliente):
         if isinstance(cliente, Cliente):
             super().remove(cliente.cpf)
+
+    def atualizar_veiculos(self):
+        super().atualiza()
+        
