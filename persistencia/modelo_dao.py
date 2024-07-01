@@ -14,3 +14,6 @@ class ModeloDAO(DAO):
     def remove(self, modelo: Modelo):
         if isinstance(modelo, Modelo):
             super().remove(modelo.codigo)
+
+    def atualiza(self):
+        super().atualiza()
