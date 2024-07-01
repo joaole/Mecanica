@@ -22,19 +22,20 @@ class ControladorTrocaDeOleo:
         self.__controlador_sistema.controlador_cliente.listar_clientes()
         cpf_cliente = self.__tela_troca_de_oleo.pega_dados_cliente()
         cliente = self.__controlador_sistema.controlador_cliente.pega_cliente_por_cpf(cpf_cliente)
-        self.__controlador_sistema.controlador_cliente.listar_veiculos_cliente(cliente)
-        dados_troca = self.__tela_troca_de_oleo.pega_dados_troca()
         if cliente is not None:
-            veiculo = self.__controlador_sistema.controlador_cliente.pega_moto_por_placa(cliente, dados_troca["placa_moto"])
+            self.__controlador_sistema.controlador_cliente.listar_veiculos_cliente(cliente)
+            placa_moto = self.__tela_troca_de_oleo.seleciona_moto()
+            veiculo = self.__controlador_sistema.controlador_cliente.pega_moto_por_placa(cliente, placa_moto)
             if veiculo is not None:
+                data_entrada = self.__tela_troca_de_oleo.pega_data_entrada()
                 for troca in self.__troca_de_oleo_entrada_dao.get_all():
                     if (troca.cliente == cliente
                             and troca.veiculo == veiculo
-                            and troca.data_entrada == dados_troca["data_entrada"]):
+                            and troca.data_entrada == data_entrada):
                         (self.__tela_troca_de_oleo.mostra_mensagem
                          ("ATENCAO: Ja possui uma troca com o mesmo cliente, veiculo e data de entrada"))
                 else:
-                    nova_troca = TrocaDeOleo(veiculo, cliente, dados_troca["data_entrada"])
+                    nova_troca = TrocaDeOleo(veiculo, cliente, data_entrada)
                     self.__troca_de_oleo_entrada_dao.add(nova_troca)
                     self.__tela_troca_de_oleo.mostra_mensagem("Troca cadastrada com sucesso")
             else:
