@@ -87,7 +87,7 @@ class TelaOleo:
 
     def mostrar_oleo(self, dados_oleo):
         sg.ChangeLookAndFeel('DarkTeal4')
-        header = ['Fornecedor', 'Marca', 'Expessura', 'valor', 'Codigo']
+        header = ['Fornecedor', 'Marca', 'Expessura', 'Valor', 'Codigo']
         layout = [
             [sg.Text('-------- SELECIONAR OLEO ----------', font=("Helvetica", 25))],
             [sg.Table(values=dados_oleo,
