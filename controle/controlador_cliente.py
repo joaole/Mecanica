@@ -96,14 +96,14 @@ class ControladorCliente:
         cpf = self.__tela_cliente.seleciona_cliente()
         cliente = self.pega_cliente_por_cpf(cpf)
         if cliente is not None:
-            lista_modelos = self.__controlador_sistema.controlador_modelo.lista_modelos()
-            if lista_modelos is not None:
+            modelo = self.__controlador_sistema.controlador_modelo.pega_modelo_por_codigo(self.__controlador_sistema.controlador_modelo.lista_modelos())
+            if modelo is not None:
                 dados = self.__tela_cliente.pega_dados_moto()
-                modelo = self.__controlador_sistema.controlador_modelo.pega_modelo_por_codigo(dados["modelo"])
                 if modelo is not None:
                     nova_moto = Veiculo(dados["placa"], dados["kilometragem"], modelo)
                     if self.pega_moto_por_placa(cliente, nova_moto.placa_moto) is None:
                         cliente.inclui_veiculo(nova_moto)
+                        self.__cliente_dao.atualiza()
                         self.__tela_cliente.mostra_mensagem("Veiculo cadastrado com sucesso")
                     else:
                         self.__tela_cliente.mostra_mensagem("ATENÇÃO: Veículo já cadastrado.")
@@ -124,6 +124,7 @@ class ControladorCliente:
             moto = self.pega_moto_por_placa(cliente, placa_moto)
             if moto is not None:
                 cliente.veiculos.remove(moto)
+                self.__cliente_dao.atualiza()
                 self.__tela_cliente.mostra_mensagem("Veiculo removido com sucesso.")
             else:
                 self.__tela_cliente.mostra_mensagem("ATENÇÃO: Moto não cadastrada")
