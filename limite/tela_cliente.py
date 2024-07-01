@@ -28,11 +28,10 @@ class TelaCliente:
 
     def pega_dados_moto(self):
         print("-------- DADOS MOTO ----------")
-        modelo_moto = input("Codigo de Modelo ")
         placa_moto = input("Placa: ")
         km_moto = input("Kilometragem: ")
 
-        return {"modelo": modelo_moto, "placa": placa_moto, "kilometragem": km_moto}
+        return {"placa": placa_moto, "kilometragem": km_moto}
 
     def pega_dados_cliente(self):
         print("-------- DADOS CLIENTE ----------")
