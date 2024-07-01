@@ -31,6 +31,9 @@ class ControladorModelo:
             codigo = self.gerar_codigo()
             novo_modelo = Modelo(dados_modelo["nome"], dados_modelo["expessura"], dados_modelo["Quantidade de oleo"],
                                  codigo)
+            for oleo in self.__controlador_sistema.controlador_oleo.oleo_dao():
+                if oleo.expessura == novo_modelo.expessura:
+                    novo_modelo.oleos.append(oleo)
             self.__modelo_dao.add(novo_modelo)
             self.__tela_modelo.mostra_mensagem("Modelo cadastrado com sucesso")
 
@@ -59,7 +62,7 @@ class ControladorModelo:
             return None
         else:
             modelos = [[m.nome, m.quantidade_oleo, m.expessura, m.codigo] for m in self.__modelo_dao.get_all()]
-            self.__tela_modelo.mostrar_modelo(modelos)
+            return self.__tela_modelo.mostrar_modelo(modelos)
 
     def excluir_modelo(self, codigo=None):
         if codigo is None:
@@ -79,13 +82,15 @@ class ControladorModelo:
         for modelo in self.__modelo_dao.get_all():
             if modelo.expessura == oleo.expessura:
                 modelo.incluir_oleo(oleo)
+                self.__modelo_dao.atualiza()
 
     def remover_oleo(self, oleo):
         for md in self.__modelo_dao.get_all():
             if md.expessura == oleo.expessura:
                 for ol in md.oleos:
                     if ol.codigo == oleo.codigo:
-                        if md.exclui_oleo(oleo) is not None:
+                        if md.excluir_oleo(oleo) is not None:
+                            self.__modelo_dao.atualiza()
                             return "Oleo Removido"
                 else:
                     return "Oleo nao encontrado"
