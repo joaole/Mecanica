@@ -35,9 +35,8 @@ class TelaTrocaDeOleo:
         return codigo
 
     def pega_dados_saida_veiculo(self):
-        codigo_oleo = input("CODIGO DE OLEO A SER UTILIZADO: ")
         data_saida = input("DATA DE SAIDA DO VEICULO: ")
-        return {"codigo_oleo": codigo_oleo, "data_saida": data_saida}
+        return data_saida
 
     def pega_dados_cliente(self):
         print("-------- DADOS CLIENTE ----------")
