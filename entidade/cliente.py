@@ -3,7 +3,7 @@ from entidade.veiculo import Veiculo
 
 
 class Cliente(Pessoa):
-    def __init__(self,nome, telefone, email, cpf):
+    def __init__(self, nome, telefone, email, cpf):
         super().__init__(nome, telefone, email)
         self.__cpf = cpf
         self.__veiculos = []
@@ -30,4 +30,3 @@ class Cliente(Pessoa):
         for veiculo in self.__veiculos:
             if veiculo.placa_moto == placa_moto:
                 return veiculo
-                
