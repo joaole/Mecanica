@@ -17,4 +17,3 @@ class CLienteDAO(DAO):
 
     def atualizar_veiculos(self):
         super().atualiza()
-        
