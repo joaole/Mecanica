@@ -5,7 +5,7 @@ class TrocaDeOleoEntradaDAO(DAO):
 
     def __init__(self):
         super().__init__('trocas_entrada.pkl')
-        TrocaDeOleo.carregar_proximo_codigo()  # Carregar o próximo código ao inicializar
+        TrocaDeOleo.carregar_proximo_codigo()
 
     def load(self):
         super().load()
