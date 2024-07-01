@@ -12,8 +12,8 @@ class ControladorTrocaDeOleo:
         self.__troca_de_oleo_saida_dao = TrocaDeOleoSaidaDAO()
 
     def pega_troca_por_codigo(self, lista, codigo):
-        for troca in lista.get_all:
-            if troca.codigo == codigo:
+        for troca in lista.get_all():
+            if troca.codigo == int(codigo):
                 return troca
         else:
             return None
@@ -48,12 +48,12 @@ class ControladorTrocaDeOleo:
         codigo = self.__tela_troca_de_oleo.seleciona_troca()
         troca = self.pega_troca_por_codigo(self.__troca_de_oleo_entrada_dao, codigo)
         if troca is not None:
-            self.__controlador_sistema.controlador_modelo.listar_oleos_do_modelo(troca.veiculo.modelo)
+            codigo = self.__controlador_sistema.controlador_modelo.listar_oleos_do_modelo(troca.veiculo.modelo)
             dados_saida = self.__tela_troca_de_oleo.pega_dados_saida_veiculo()
-            oleo = self.__controlador_sistema.controlador_oleo.pega_oleo_por_codigo(dados_saida["codigo_oleo"])
-            troca.data_saida = dados_saida["data_saida"]
+            oleo = self.__controlador_sistema.controlador_oleo.pega_oleo_por_codigo(codigo)
+            troca.data_saida = dados_saida
             troca.oleo = oleo
-            troca.valor_final = self.calcular_valor_troca(troca)
+            self.calcular_valor_troca(troca)
             self.finaliza_troca(troca.codigo)
             print(troca.data_saida)
             print(troca.oleo.marca)
