@@ -39,20 +39,21 @@ class TelaTrocaDeOleo:
         data_saida = input("DATA DE SAIDA DO VEICULO: ")
         return {"codigo_oleo": codigo_oleo, "data_saida": data_saida}
 
-    def pega_dados_troca(self):
-        print("-------- DADOS TROCA DE OLEO ----------")
-        placa_moto = input("Placa do veículo: ")
-        data_entrada = input("Data de entrada do veiculo: ")
-
-        return {"placa_moto": placa_moto, "data_entrada": data_entrada}
+    def pega_dados_cliente(self):
+        print("-------- DADOS CLIENTE ----------")
+        placa_moto = input("Placa da moto: ")
+        return placa_moto
 
     def pega_dados_cliente(self):
         print("-------- DADOS CLIENTE ----------")
-        nome_cliente = input("Nome: ")
-        telefone_cliente = input("Telefone: ")
-        email_cliente = input("Email: ")
-        cpf_cliente = input("CPF: ")
-        return {"nome": nome_cliente, "telefone": telefone_cliente, "email": email_cliente, "cpf": cpf_cliente}
+        cpf_cliente = input("CPF do cliente: ")
+        return cpf_cliente
+
+    def pega_data_entrada(self):
+        print("-------- DADOS TROCA ----------")
+        data_entrada = input("Data de entrada: ")
+        return data_entrada
+
     def mostra_cliente(self, dados_cliente):
         print("NOME DO CLIENTE: ", dados_cliente["nome"])
         print("CPF DO CLIENTE: ", dados_cliente["cpf"])
