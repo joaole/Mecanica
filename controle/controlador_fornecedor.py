@@ -130,5 +130,3 @@ class ControladorFornecedor:
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()
-
-
